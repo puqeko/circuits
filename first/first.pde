@@ -8,14 +8,16 @@ void setup() {
   size(500, 500);
   fill(0);
   smooth();
+  strokeWeight(2);
 }
 
 int mode = 0;
 boolean once = false;
 boolean run = false;
 int runCount = 0;
+boolean terminated = false;
 
-String type = "wire";
+String type = "ind";
 
 void draw() {
   background(204);
@@ -47,16 +49,20 @@ void draw() {
   }
   
   if (mode == 0) {
-    if (keyPressed && key == ' ') {
+    if (keyPressed && key == ' ' && !terminated) {
       mode = 1;
       x1 = x;
       y1 = y;
     }
+    else if (!keyPressed) terminated = false;
   } else if (mode == 1) {
     Component c;
     switch(type) {
       case "res": c = new Resistor(x, y, x1, y1); break;
       case "cap": c = new Capacitor(x, y, x1, y1); break;
+      case "ind": c = new Inductor(x, y, x1, y1); break;
+      case "cell": c = new Cell(x, y, x1, y1); break;
+      case "term": c = new Terminal(x, y, x1, y1); break;
       default: c = new Wire(x, y, x1, y1);
     }
     c.x = x1;
@@ -73,18 +79,33 @@ void draw() {
             y1 = y;
             x1 = x;
             len ++;
+            
+            if (c.terminates) {
+              mode = 0;
+              terminated = true;
+            }
             type = "wire";
           }
           break;
         case 'r': type = "res"; break;
         case 'w': type = "wire"; break;
         case 'c': type = "cap"; break;
+        case 'i': type = "ind"; break;
+        case 'b': type = "cell"; break;
+        case 'o': type = "term"; break;
       }
     }
     
     if (keyPressed && (key == ENTER | key == RETURN)) {
       mode = 0;
       type = "wire";
+      
+      if (leng(x, y, x1, y1) > 5) {
+        qu[len] = c;
+        y1 = y;
+        x1 = x;
+        len ++;
+      }
     }
   }
 }
