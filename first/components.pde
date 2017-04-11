@@ -1,7 +1,7 @@
 class Component {
   float scale = 4;
   float len, minLen;
-  float x, y;
+  int x, y;
   float xend, yend;
   boolean terminates = false;
   
@@ -23,6 +23,12 @@ class Component {
   void drawText() {
     
   }
+  
+  void resize(int x1, int y1, int u, int v) {
+    x = x1; y = y1;
+    xend = u; yend = v;
+    len = max(leng(x, y, u, v), minLen);
+  }
 }
 
 class Resistor extends Component {
@@ -34,7 +40,11 @@ class Resistor extends Component {
   Resistor(int x, int y, int u, int v) {
     zigLen = 4 * super.scale * zigs;
     minLen = zigLen + 4 * super.scale;
-    len = max(leng(x, y, u, v), minLen);
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
     tails = (len - zigLen) / 2;
   }
   
@@ -65,7 +75,11 @@ class Inductor extends Component {
   Inductor(int x, int y, int u, int v) {
     zigLen = 4 * super.scale * zigs;
     minLen = zigLen + 4 * super.scale;
-    len = max(leng(x, y, u, v), minLen);
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
     tails = (len - zigLen) / 2;
   }
   
@@ -93,7 +107,11 @@ class Capacitor extends Component {
   // from x, y to u, v
   Capacitor(int x, int y, int u, int v) {
     minLen = super.scale * 4;
-    len = max(leng(x, y, u, v), minLen);
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
     tails = (len - capLen) / 2;
   }
   
@@ -119,7 +137,11 @@ class Cell extends Component {
   // from x, y to u, v
   Cell(int x, int y, int u, int v) {
     minLen = super.scale * 4;
-    len = max(leng(x, y, u, v), minLen);
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
     tails = (len - capLen) / 2;
   }
   
@@ -138,27 +160,21 @@ class Cell extends Component {
 }
 
 class Terminal extends Component {
-  
-  float capLen = super.scale * 2;
-  float tails;
-  
   // from x, y to u, v
   Terminal(int x, int y, int u, int v) {
     super.terminates = true;
-    minLen = super.scale * 4;
-    len = max(leng(x, y, u, v), minLen);
-    tails = (len - capLen) / 2;
+    super.minLen = super.scale * 4;
+    super.resize(x, y, u, v);
   }
   
   @Override void drawShape() {
     float i = super.scale;
-    float x = 0 + tails;
     
-    line(0, 0, x, 0);
+    line(0, 0, super.len - 4 * i, 0);
     //strokeWeight(2);
     noFill();
     ellipseMode(CENTER);
-    ellipse(x + i, 0, 2 * i, 2 * i);
+    ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
     fill(0);
   }
 }
@@ -166,7 +182,7 @@ class Terminal extends Component {
 class Wire extends Component {
   
   Wire(int x, int y, int u, int v) {
-    super.len = max(super.scale, leng(x, y, u, v));
-    super.minLen = super.scale;
+    super.minLen = 1;
+    super.resize(x, y, u, v);
   }
 }
