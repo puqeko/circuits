@@ -59,6 +59,37 @@ class Resistor extends Component {
   }
 }
 
+
+class Capacitor extends Component {
+  
+  float capLen = super.scale * 2;
+  float tails;
+  
+  // from x, y to u, v
+  Capacitor(int x, int y, int u, int v) {
+    minLen = super.scale * 4;
+    len = max(leng(x, y, u, v), minLen);
+    tails = (len - capLen) / 2;
+  }
+  
+  @Override void drawShape() {
+    float i = super.scale;
+    float x = 0 + tails;
+    
+    line(0, 0, x, 0);
+    //strokeWeight(2);
+    line(x, 0 - i * 4, x, 0 + i * 4);
+    float capEnd = x + capLen;
+    line(capEnd, 0 - i * 4, capEnd, 0 + i * 4);
+    //strokeWeight(1);
+    line(capEnd, 0, capEnd + tails, 0);
+  }
+  
+  @Override void drawText() {
+    
+  }
+}
+
 class Wire extends Component {
   
   Wire(int x, int y, int u, int v) {

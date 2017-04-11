@@ -7,6 +7,7 @@ int len = 0;
 void setup() {
   size(500, 500);
   fill(0);
+  smooth();
 }
 
 int mode = 0;
@@ -55,6 +56,7 @@ void draw() {
     Component c;
     switch(type) {
       case "res": c = new Resistor(x, y, x1, y1); break;
+      case "cap": c = new Capacitor(x, y, x1, y1); break;
       default: c = new Wire(x, y, x1, y1);
     }
     c.x = x1;
@@ -71,19 +73,18 @@ void draw() {
             y1 = y;
             x1 = x;
             len ++;
+            type = "wire";
           }
           break;
-        case 'r':
-          type = "res";
-          break;
-        case 'w':
-          type = "wire";
-          break;
+        case 'r': type = "res"; break;
+        case 'w': type = "wire"; break;
+        case 'c': type = "cap"; break;
       }
     }
     
     if (keyPressed && (key == ENTER | key == RETURN)) {
       mode = 0;
+      type = "wire";
     }
   }
 }
