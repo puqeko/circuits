@@ -1,3 +1,7 @@
+float leng(int x, int y, int u, int v) {
+  return sqrt(sq(u - x) + sq(v - y));
+}
+
 class Component {
   float scale = 4;
   float len, minLen;

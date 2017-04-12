@@ -1,10 +1,11 @@
-Component[] activeComps = new Component[100];
-int numComps = 0;
+Component[] activeComps = new Component[1000];
+Component[] historyComps = new Component[1000];
+int numComps = 0, numHistoryComps = 0;
 
 void setup() {
   size(500, 500);
-  fill(0);
-  smooth();
+  stroke(255);
+  fill(255);
   strokeWeight(2);
   drawScene();
 }
@@ -30,15 +31,30 @@ void draw() {
 }
 
 void drawScene() {
-  background(204);
-  cursor.draw();
+  background(0);
+  drawScene(false);
+}
+
+// save reversed out image (black on white)
+void printScene() {
+  stroke(0);
+  fill(0);
+  background(255);
+  drawScene(true);
+  save("out");
+  stroke(255);
+  fill(255);
+  
+  println("Saved");
+  drawScene();
+}
+
+void drawScene(boolean forPrint) {
+  
+  if (!forPrint) cursor.draw();
   mode.draw();
   
   for (int i = 0; i < numComps; i++) {
     activeComps[i].draw();
   }
-}
-
-float leng(int x, int y, int u, int v) {
-  return sqrt(sq(u - x) + sq(v - y));
 }

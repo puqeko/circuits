@@ -29,12 +29,18 @@ int fastKey = 0;
 void updateInput() {
   if (keyPressed) {
     int code = key == CODED ? keyCode : key;
-    if (!keyDownLong[code] && keyDown[code]) {
-      if (millis() - keyTime[code] > waitTime) {
-        keyDownLong[code] = true;
-        //keyLongDown(code);
-        fastKey = code;
-        fastMode = true;
+    
+    // only apply fastKey to these ones
+    if (code == LEFT || code == RIGHT || code == UP || code == DOWN) {
+      
+      // not registered as long press yet, but pressed down
+      if (!keyDownLong[code] && keyDown[code]) {
+        if (millis() - keyTime[code] > waitTime) {
+          keyDownLong[code] = true;
+          //keyLongDown(code);
+          fastKey = code;
+          fastMode = true;
+        }
       }
     }
   }
