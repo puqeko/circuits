@@ -7,7 +7,7 @@ void setup() {
   stroke(255);
   fill(255);
   smooth();
-  strokeWeight(2);
+  strokeWeight(3);
   drawScene();
 }
 
