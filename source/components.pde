@@ -14,6 +14,7 @@ class Component {
     translate(x, y);
     pushMatrix();
     rotate(atan2(yend - y, xend - x));
+    if (x > xend) scale(1, -1); // correct orientation
     drawShape();
     popMatrix();
     drawText();
@@ -98,7 +99,7 @@ class Inductor extends Component {
       start = x + j * 4 * i;
       arc(start + 2 * i, 0, 4 * i, 8 * i, -PI, 0);
     }
-    fill(0);
+    fill(255);
     line(start + 4 * i, 0, start + 4 * i + tails, 0);
   }
 }

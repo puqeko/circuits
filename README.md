@@ -4,6 +4,5 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
 
 ## To do
 - Insert values for components.
-- Align components upright (e.g. inductors and resistors) when in drawing mode.
-- Add notes.
+- Add notes/labels.
 - Crop exported image so that circuit sits in screen center.
