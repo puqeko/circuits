@@ -8,16 +8,18 @@ class Component {
   int x, y;
   float xend, yend;
   boolean terminates = false;
+  String label;
   
   void draw() {
     pushMatrix();
     translate(x, y);
     pushMatrix();
-    rotate(atan2(yend - y, xend - x));
+    float ang = atan2(yend - y, xend - x);
+    rotate(ang);
     if (x > xend) scale(1, -1); // correct orientation
     drawShape();
     popMatrix();
-    drawText();
+    drawText(ang);
     popMatrix();
   }
   
@@ -25,8 +27,12 @@ class Component {
     line(0, 0, 0 + len, 0);
   }
   
-  void drawText() {
-    
+  void drawText(float ang) {
+    label = "Hello Strings!";
+    // todo:
+    // - look up centering text
+    // - place text for any orientation
+    text(label, len/2 * (x > xend ? -1 : 1) - label.length() * 4.2 , -scale * 6);
   }
   
   void resize(int x1, int y1, int u, int v) {

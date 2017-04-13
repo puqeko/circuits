@@ -2,11 +2,16 @@ Component[] activeComps = new Component[1000];
 Component[] historyComps = new Component[1000];
 int numComps = 0, numHistoryComps = 0;
 
+PFont fnt;
+
 void setup() {
   size(500, 500);
   stroke(255);
   fill(255);
   strokeWeight(3);
+  
+  fnt = createFont("Courier", 16, true);
+  textFont(fnt, 16);
   drawScene();
 }
 
