@@ -28,11 +28,18 @@ class Component {
   }
   
   void drawText(float ang) {
-    label = "Hello Strings!";
-    // todo:
-    // - look up centering text
-    // - place text for any orientation
-    text(label, len/2 * (x > xend ? -1 : 1) - label.length() * 4.2 , -scale * 6);
+    // To do: Add centering adjustment
+    
+    label = "R";
+  
+    // midpoint
+    float xnew = len * cos(ang) / 2;
+    float ynew = len * sin(ang) / 2;
+    
+    // adjust to place left or on top of component
+    ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+    
+    text(label, xnew - cos(ang) * scale * 6, ynew - sin(ang) * scale * 6); 
   }
   
   void resize(int x1, int y1, int u, int v) {
