@@ -17,7 +17,7 @@ class Component {
     float ang = atan2(yend - y, xend - x);
     g.rotate(ang);
     
-    if (x > xend) scale(1, -1); // correct orientation
+    if (x > xend) g.scale(1, -1); // correct orientation
     drawShape(g);
     
     g.popMatrix();
