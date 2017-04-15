@@ -68,11 +68,27 @@ class LabelMode extends Mode {
   }
   
   @Override void select(int code) {
-    if ((code >= 97 && code <= 122) ||
-        (code >= 65 && code <= 90)) { //alpha
+    if (code >= 48 && code <= 122) { //common chars
           text += char(code);
     } else if (code == 8) { // delete
       if (text.length() > 0) text = text.substring(0, text.length() - 1);
+    }
+  }
+  
+  @Override void key(int code) {
+    switch(code) {
+      case ESC:
+        c.label = "";
+      case RETURN:
+      case ENTER:
+      case ' ':
+      case LEFT: case RIGHT: case UP: case DOWN:
+      case 'j': case 'k': case 'l': case 'h':
+      case 'w': case 'a': case 's': case 'd':
+        cursor.freeze = false;
+        if (c.label == "_") c.label = "";
+        mode = new DrawMode();
+        break;
     }
   }
 }
@@ -121,7 +137,7 @@ class DrawMode extends Mode {
       case ' ':
          activeComps[numComps++] = cur;
          if (cur.terminates) mode = new SelectionMode();
-         else if (keyDown[16]) mode = new DrawMode(); // shift to bipass entering label text
+         else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
          else mode = new LabelMode(cur);
          break;
       case 'u': // undo

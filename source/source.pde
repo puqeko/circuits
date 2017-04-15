@@ -58,19 +58,11 @@ void printScene() {
 }
 
 void drawScene(boolean forPrint) {
+    
+  if (!forPrint) cursor.draw();
+  mode.draw();
   
-  if (mode.name == "LabelMode") {
-      background(0);
-      cursor.draw();
-      mode.draw();
-      ((LabelMode)mode).c.draw(); // only component we are editing
-  } else {
-    
-    if (!forPrint) cursor.draw();
-    mode.draw();
-    
-    for (int i = 0; i < numComps; i++) {
-      activeComps[i].draw();
-    }
+  for (int i = 0; i < numComps; i++) {
+    activeComps[i].draw();
   }
 }

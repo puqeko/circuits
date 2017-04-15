@@ -8,6 +8,7 @@ class Component {
   int x, y;
   float xend, yend;
   boolean terminates = false;
+  boolean labeled = true;
   String label = "";
   
   void draw() {
@@ -32,15 +33,18 @@ class Component {
   
   void drawText(float ang) {
     // To do: Add centering adjustment
-  
-    // midpoint
-    float xnew = len * cos(ang) / 2;
-    float ynew = len * sin(ang) / 2;
     
-    // adjust to place left or on top of component
-    ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
-    
-    text(label, xnew - cos(ang) * scale * 6, ynew - sin(ang) * scale * 6); 
+    if (label.length() > 0 && labeled) {
+      
+      // midpoint
+      float xnew = len * cos(ang) / 2;
+      float ynew = len * sin(ang) / 2;
+      
+      // adjust to place left or on top of component
+      ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+      
+      text(label, xnew - cos(ang) * scale * 6, ynew - sin(ang) * scale * 6);
+    }
   }
   
   void resize(int x1, int y1, int u, int v) {
@@ -203,5 +207,6 @@ class Wire extends Component {
   Wire(int x, int y, int u, int v) {
     super.minLen = 1;
     super.resize(x, y, u, v);
+    super.labeled = false;
   }
 }
