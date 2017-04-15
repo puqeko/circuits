@@ -158,9 +158,7 @@ class DrawMode extends Mode {
         break;
       case 'r': cur = new Resistor(x, y, cursor.x, cursor.y); break;
       case 'w': cur = new Wire(x, y, cursor.x, cursor.y); break;
-      case 67: case 'c': 
-        println("CAP");
-        cur = new Capacitor(x, y, cursor.x, cursor.y); break;
+      case 'c': cur = new Capacitor(x, y, cursor.x, cursor.y); break;
       case 'i': cur = new Inductor(x, y, cursor.x, cursor.y); break;
       case 'b': cur = new Cell(x, y, cursor.x, cursor.y); break;
       case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;

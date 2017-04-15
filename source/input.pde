@@ -6,7 +6,7 @@ int waitTime = 200;
 
 void keyPressed() {
   println(keyCode);
-  if ( (key == CODED || key <= 256) && !keyDown[keyCode]) {
+  if ( (key == CODED || key <= 256)) {
     int code = key == CODED ? keyCode : key;
     keyTime[code] = millis();
     keyDown[code] = true;
