@@ -74,7 +74,8 @@ class LabelMode extends Mode {
   }
   
   @Override void select(int code) {
-    if (code >= 48 && code <= 122) { //common chars
+    // 32 is space
+    if ((code >= 48 && code <= 122) || code == 32 || code == ' ') { //common chars
           text += char(code);
           println("add");
     } else if (code == 8) { // delete
@@ -88,7 +89,6 @@ class LabelMode extends Mode {
         c.labelText = "";
       case RETURN:
       case ENTER:
-      case ' ':
       case LEFT: case RIGHT: case UP: case DOWN:
         cursor.freeze = false;
         if (c.labelText == "_") c.labelText = "";

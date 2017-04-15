@@ -60,7 +60,7 @@ void draw() {
      drawScene(); // so that blinker updates
   }
   
-  println(frameRate);
+  //println(frameRate);
 }
 
 void drawScene() {
