@@ -7,9 +7,11 @@ class Component {
   float len, minLen;
   int x, y;
   float xend, yend;
+  
   boolean terminates = false;
   boolean labeled = true;
-  String label = "";
+  String labelText = "";
+  int labelDistanceFactor = 6;
   
   void draw() {
     pushMatrix();
@@ -34,7 +36,7 @@ class Component {
   void drawText(float ang) {
     // To do: Add centering adjustment
     
-    if (label.length() > 0 && labeled) {
+    if (labeled && labelText.length() > 0) {
       
       // midpoint
       float xnew = len * cos(ang) / 2;
@@ -43,7 +45,9 @@ class Component {
       // adjust to place left or on top of component
       ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
       
-      text(label, xnew - cos(ang) * scale * 6, ynew - sin(ang) * scale * 6);
+      text(labelText,
+        xnew - cos(ang) * scale * labelDistanceFactor,
+        ynew - sin(ang) * scale * labelDistanceFactor);
     }
   }
   
@@ -61,6 +65,7 @@ class Resistor extends Component {
   
   // from x, y to u, v
   Resistor(int x, int y, int u, int v) {
+    super.labelDistanceFactor = 5;
     zigLen = 4 * super.scale * zigs;
     minLen = zigLen + 4 * super.scale;
     this.resize(x, y, u, v);
@@ -129,6 +134,7 @@ class Capacitor extends Component {
   
   // from x, y to u, v
   Capacitor(int x, int y, int u, int v) {
+    super.labelDistanceFactor = 7;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }

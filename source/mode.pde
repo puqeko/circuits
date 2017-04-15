@@ -49,15 +49,20 @@ class LabelMode extends Mode {
   
   LabelMode(Component cm) {
     super.name = "LabelMode";
+    
+    if (!cm.labeled) {
+      this.key(ESC); // pull out
+    }
+    
     cursor.freeze = true;
     c = cm;
     time = millis();
   }
   
   @Override void draw() {
-    if (text != "") c.label = text;
+    if (text != "") c.labelText = text;
     else {
-      c.label = blink ? "_" : "";
+      c.labelText = blink ? "_" : "";
       
       int curTime = millis();
       if (curTime - time > 500) {
@@ -78,7 +83,7 @@ class LabelMode extends Mode {
   @Override void key(int code) {
     switch(code) {
       case ESC:
-        c.label = "";
+        c.labelText = "";
       case RETURN:
       case ENTER:
       case ' ':
@@ -86,7 +91,7 @@ class LabelMode extends Mode {
       case 'j': case 'k': case 'l': case 'h':
       case 'w': case 'a': case 's': case 'd':
         cursor.freeze = false;
-        if (c.label == "_") c.label = "";
+        if (c.labelText == "_") c.labelText = "";
         mode = new DrawMode();
         break;
     }
@@ -136,6 +141,8 @@ class DrawMode extends Mode {
         cur.terminates = true;
       case ' ':
          activeComps[numComps++] = cur;
+         
+         println(cur.labeled);
          if (cur.terminates) mode = new SelectionMode();
          else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
          else mode = new LabelMode(cur);
@@ -151,7 +158,9 @@ class DrawMode extends Mode {
         break;
       case 'r': cur = new Resistor(x, y, cursor.x, cursor.y); break;
       case 'w': cur = new Wire(x, y, cursor.x, cursor.y); break;
-      case 'c': cur = new Capacitor(x, y, cursor.x, cursor.y); break;
+      case 67: case 'c': 
+        println("CAP");
+        cur = new Capacitor(x, y, cursor.x, cursor.y); break;
       case 'i': cur = new Inductor(x, y, cursor.x, cursor.y); break;
       case 'b': cur = new Cell(x, y, cursor.x, cursor.y); break;
       case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;
