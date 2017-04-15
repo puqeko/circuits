@@ -3,17 +3,25 @@ class Component {
   float len, minLen;
   int x, y;
   float xend, yend;
+  
   boolean terminates = false;
+  boolean labeled = true;
+  String labelText = "";
+  int labelDistanceFactor = 6;
   
   void draw() {
     pushMatrix();
     translate(x, y);
     pushMatrix();
-    rotate(atan2(yend - y, xend - x));
+    
+    float ang = atan2(yend - y, xend - x);
+    rotate(ang);
+    
     if (x > xend) scale(1, -1); // correct orientation
     drawShape();
+    
     popMatrix();
-    drawText();
+    drawText(ang);
     popMatrix();
   }
   
@@ -21,8 +29,22 @@ class Component {
     line(0, 0, 0 + len, 0);
   }
   
-  void drawText() {
+  void drawText(float ang) {
+    // To do: Add centering adjustment
     
+    if (labeled && labelText.length() > 0) {
+      
+      // midpoint
+      float xnew = len * cos(ang) / 2;
+      float ynew = len * sin(ang) / 2;
+      
+      // adjust to place left or on top of component
+      ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+      
+      text(labelText,
+        xnew - cos(ang) * scale * labelDistanceFactor,
+        ynew - sin(ang) * scale * labelDistanceFactor);
+    }
   }
   
   void resize(int x1, int y1, int u, int v) {
@@ -39,6 +61,7 @@ class Resistor extends Component {
   
   // from x, y to u, v
   Resistor(int x, int y, int u, int v) {
+    super.labelDistanceFactor = 5;
     zigLen = 4 * super.scale * zigs;
     minLen = zigLen + 4 * super.scale;
     this.resize(x, y, u, v);
@@ -105,6 +128,7 @@ class Capacitor extends Component {
   
   // from x, y to u, v
   Capacitor(int x, int y, int u, int v) {
+    super.labelDistanceFactor = 7;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -183,5 +207,6 @@ class Wire extends Component {
   Wire(int x, int y, int u, int v) {
     super.minLen = 1;
     super.resize(x, y, u, v);
+    super.labeled = false;
   }
 }

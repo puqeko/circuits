@@ -12,12 +12,19 @@ class Mode {
       case UP: case 'w': case 'W': case 'k': case 'K': cursor.y -= step; break;
       case DOWN: case 's': case 'S': case 'j': case 'J': cursor.y += step; break;
     }
+    
+    // keep in screen bounds
+    if (cursor.x < 0) cursor.x = 0;
+    if (cursor.y < 0) cursor.y = 0;
+    if (cursor.x > 500) cursor.x = 500;
+    if (cursor.y > 500) cursor.y = 500;
   }
 }
 
 // allways active
 class Cursor extends Mode {
   int x = 50, y = 50;
+  boolean freeze = false;
   
   Cursor() {
     super.name = "cursor";
@@ -26,6 +33,68 @@ class Cursor extends Mode {
   @Override void draw() {
     rectMode(CENTER);
     rect(x - x % 10, y - y % 10, 5, 5);
+  }
+  
+  @Override void select(int code) {
+    if (!freeze) super.select(code);
+  }
+}
+
+class LabelMode extends Mode {
+  
+  Component c;
+  int time;
+  boolean blink = false;
+  String text = "";
+  
+  LabelMode(Component cm) {
+    super.name = "LabelMode";
+    
+    if (!cm.labeled) {
+      this.key(ESC); // pull out
+    }
+    
+    cursor.freeze = true;
+    c = cm;
+    time = millis();
+  }
+  
+  @Override void draw() {
+    if (text != "") c.labelText = text;
+    else {
+      c.labelText = blink ? "_" : "";
+      
+      int curTime = millis();
+      if (curTime - time > 500) {
+        time = curTime;
+        blink = !blink;
+      }
+    }
+  }
+  
+  @Override void select(int code) {
+    if (code >= 48 && code <= 122) { //common chars
+          text += char(code);
+    } else if (code == 8) { // delete
+      if (text.length() > 0) text = text.substring(0, text.length() - 1);
+    }
+  }
+  
+  @Override void key(int code) {
+    switch(code) {
+      case ESC:
+        c.labelText = "";
+      case RETURN:
+      case ENTER:
+      case ' ':
+      case LEFT: case RIGHT: case UP: case DOWN:
+      case 'j': case 'k': case 'l': case 'h':
+      case 'w': case 'a': case 's': case 'd':
+        cursor.freeze = false;
+        if (c.labelText == "_") c.labelText = "";
+        mode = new DrawMode();
+        break;
+    }
   }
 }
 
@@ -77,8 +146,11 @@ class DrawMode extends Mode {
         cur.terminates = true;
       case ' ':
          activeComps[numComps++] = cur;
+         
+         println(cur.labeled);
          if (cur.terminates) mode = new SelectionMode();
-         else mode = new DrawMode();
+         else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
+         else mode = new LabelMode(cur);
          break;
       case 'u': // undo
         undo();
