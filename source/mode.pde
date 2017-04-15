@@ -12,12 +12,19 @@ class Mode {
       case UP: cursor.y -= step; break;
       case DOWN: cursor.y += step; break;
     }
+    
+    // keep in screen bounds
+    if (cursor.x < 0) cursor.x = 0;
+    if (cursor.y < 0) cursor.y = 0;
+    if (cursor.x > 500) cursor.x = 500;
+    if (cursor.y > 500) cursor.y = 500;
   }
 }
 
 // allways active
 class Cursor extends Mode {
   int x = 50, y = 50;
+  boolean freeze = false;
   
   Cursor() {
     super.name = "cursor";
@@ -26,6 +33,47 @@ class Cursor extends Mode {
   @Override void draw() {
     rectMode(CENTER);
     rect(x - x % 10, y - y % 10, 5, 5);
+  }
+  
+  @Override void select(int code) {
+    if (!freeze) super.select(code);
+  }
+}
+
+class LabelMode extends Mode {
+  
+  Component c;
+  int time;
+  boolean blink = false;
+  String text = "";
+  
+  LabelMode(Component cm) {
+    super.name = "LabelMode";
+    cursor.freeze = true;
+    c = cm;
+    time = millis();
+  }
+  
+  @Override void draw() {
+    if (text != "") c.label = text;
+    else {
+      c.label = blink ? "_" : "";
+      
+      int curTime = millis();
+      if (curTime - time > 500) {
+        time = curTime;
+        blink = !blink;
+      }
+    }
+  }
+  
+  @Override void select(int code) {
+    if ((code >= 97 && code <= 122) ||
+        (code >= 65 && code <= 90)) { //alpha
+          text += char(code);
+    } else if (code == 8) { // delete
+      if (text.length() > 0) text = text.substring(0, text.length() - 1);
+    }
   }
 }
 
@@ -73,7 +121,8 @@ class DrawMode extends Mode {
       case ' ':
          activeComps[numComps++] = cur;
          if (cur.terminates) mode = new SelectionMode();
-         else mode = new DrawMode();
+         else if (keyDown[16]) mode = new DrawMode(); // shift to bipass entering label text
+         else mode = new LabelMode(cur);
          break;
       case 'u': // undo
         println("undo");

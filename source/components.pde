@@ -8,16 +8,19 @@ class Component {
   int x, y;
   float xend, yend;
   boolean terminates = false;
-  String label;
+  String label = "";
   
   void draw() {
     pushMatrix();
     translate(x, y);
     pushMatrix();
+    
     float ang = atan2(yend - y, xend - x);
     rotate(ang);
+    
     if (x > xend) scale(1, -1); // correct orientation
     drawShape();
+    
     popMatrix();
     drawText(ang);
     popMatrix();
@@ -29,8 +32,6 @@ class Component {
   
   void drawText(float ang) {
     // To do: Add centering adjustment
-    
-    label = "R";
   
     // midpoint
     float xnew = len * cos(ang) / 2;
