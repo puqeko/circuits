@@ -77,12 +77,14 @@ class Resistor extends Component {
     
     g.line(0, 0, x, y);
     float start = 0, j = 0;
+    thickStyle(g);
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
       g.line(start, y, start + 1 * i, y + 2 * i);
       g.line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
       g.line(start + 3 * i, y - 2 * i, start + 4 * i, y);
     }
+    resetThick(g);
     g.line(start + 4 * i, y, start + 4 * i + tails, y);
   }
 }
@@ -112,10 +114,12 @@ class Inductor extends Component {
     g.line(0, 0, x, 0);
     g.noFill();
     float start = 0, j = 0;
+    thickStyle(g);
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
       g.arc(start + 2 * i, 0, 4 * i, 8 * i, -PI, 0);
     }
+    resetThick(g);
     g.fill(255);
     g.line(start + 4 * i, 0, start + 4 * i + tails, 0);
   }
@@ -143,9 +147,11 @@ class Capacitor extends Component {
     float x = 0 + tails;
     
     g.line(0, 0, x, 0);
+    thickStyle(g);
     g.line(x, 0 - i * 4, x, 0 + i * 4);
     float capEnd = x + capLen;
     g.line(capEnd, 0 - i * 4, capEnd, 0 + i * 4);
+    resetThick(g);
     g.line(capEnd, 0, capEnd + tails, 0);
   }
 }
@@ -171,9 +177,11 @@ class Cell extends Component {
     float x = 0 + tails;
     
     g.line(0, 0, x, 0);
+    thickStyle(g);
     g.line(x, 0 - i * 2, x, 0 + i * 2);
     float capEnd = x + capLen;
     g.line(capEnd, 0 - i * 5, capEnd, 0 + i * 5);
+    resetThick(g);
     g.line(capEnd, 0, capEnd + tails, 0);
   }
 }

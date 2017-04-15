@@ -7,11 +7,15 @@ PGraphics g;
 
 void setup() {
   size(500, 500);
+  
+  smooth();
+  // leave this, then use noSmooth + blur and custom
+  // downscaling for image export.
+  
   fnt = createFont("Monospaced-48", 16, true);
   g = createGraphics(500, 500);
   
   g.beginDraw();
-  g.smooth();
   resetStyle(g);
   g.textFont(fnt, 16);
   g.endDraw();
@@ -20,10 +24,19 @@ void setup() {
 }
 
 void resetStyle(PGraphics g) {
-  g.strokeWeight(3);
+  resetThick(g);
   g.stroke(255);
   g.fill(255);
 }
+
+void thickStyle(PGraphics g) {
+  g.strokeWeight(4);
+}
+
+void resetThick(PGraphics g) {
+  g.strokeWeight(2);
+}
+
 
 Cursor cursor = new Cursor();
 Mode mode = new SelectionMode();
@@ -61,8 +74,7 @@ void drawScene() {
     activeComps[i].draw(g);
   }
   g.endDraw();
-  
-  image(g, 50, 50);
+  image(g, 0, 0, 500, 500);
 }
 
 // save reversed out image (black on white)
