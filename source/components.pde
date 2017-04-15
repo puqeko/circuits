@@ -54,7 +54,6 @@ class Resistor extends Component {
     float x = 0 + tails, y = 0;
     
     line(0, 0, x, y);
-    strokeWeight(4);
     float start = 0, j = 0;
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
@@ -62,7 +61,6 @@ class Resistor extends Component {
       line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
       line(start + 3 * i, y - 2 * i, start + 4 * i, y);
     }
-    strokeWeight(2);
     line(start + 4 * i, y, start + 4 * i + tails, y);
   }
 }
