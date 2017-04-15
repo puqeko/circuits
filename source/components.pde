@@ -21,7 +21,9 @@ class Component {
     drawShape();
     
     popMatrix();
-    drawText(ang);
+    if (labeled && labelText.length() > 0) {
+      drawText(ang);
+    }
     popMatrix();
   }
   
@@ -32,19 +34,16 @@ class Component {
   void drawText(float ang) {
     // To do: Add centering adjustment
     
-    if (labeled && labelText.length() > 0) {
-      
-      // midpoint
-      float xnew = len * cos(ang) / 2;
-      float ynew = len * sin(ang) / 2;
-      
-      // adjust to place left or on top of component
-      ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
-      
-      text(labelText,
-        xnew - cos(ang) * scale * labelDistanceFactor,
-        ynew - sin(ang) * scale * labelDistanceFactor);
-    }
+    // midpoint
+    float xnew = len * cos(ang) / 2;
+    float ynew = len * sin(ang) / 2;
+    
+    // adjust to place left or on top of component
+    ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+    
+    text(labelText,
+      xnew - cos(ang) * scale * labelDistanceFactor,
+      ynew - sin(ang) * scale * labelDistanceFactor);
   }
   
   void resize(int x1, int y1, int u, int v) {
@@ -95,6 +94,7 @@ class Inductor extends Component {
   
   // from x, y to u, v
   Inductor(int x, int y, int u, int v) {
+    super.labelDistanceFactor = 7;
     zigLen = 4 * super.scale * zigs;
     minLen = zigLen + 4 * super.scale;
     this.resize(x, y, u, v);

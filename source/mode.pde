@@ -44,7 +44,7 @@ class LabelMode extends Mode {
   
   Component c;
   int time;
-  boolean blink = false;
+  boolean blink = true; // start with _ char
   String text = "";
   
   LabelMode(Component cm) {
@@ -148,7 +148,7 @@ class DrawMode extends Mode {
          activeComps[numComps++] = cur;
          
          println(cur.labeled);
-         if (cur.terminates) mode = new SelectionMode();
+         if (cur.terminates && !cur.labeled) mode = new SelectionMode();
          else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
          else mode = new LabelMode(cur);
          break;
