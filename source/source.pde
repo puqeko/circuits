@@ -11,7 +11,7 @@ void setup() {
   smooth();
   strokeWeight(3);
   
-  fnt = createFont("Courier", 16, true);
+  fnt = createFont("Monospaced-48", 16, true);
   textFont(fnt, 16);
   drawScene();
 }
@@ -34,7 +34,7 @@ void draw() {
     // draw for fast mode
     drawScene();
   }
-  if (mode.name == "LabelMode") {
+  if (mode.name == "label") {
      drawScene();
   }
 }

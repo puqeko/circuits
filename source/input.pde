@@ -11,7 +11,6 @@ void keyPressed() {
       keyTime[code] = millis();
       keyDown[code] = true;
       keyDown(code);
-      println("down: " + code);
     }
   }
   
@@ -23,7 +22,6 @@ void keyReleased() {
   if (key == CODED || key <= 256) {
     int code = key == CODED ? keyCode : key;
     keyDown[code] = keyDownLong[code] = false;
-    println("up: " + code);
   }
 }
 
@@ -42,8 +40,6 @@ void updateInput() {
       if (!keyDownLong[code] && keyDown[code]) {
         if (millis() - keyTime[code] > waitTime) {
           keyDownLong[code] = true;
-          println("fast: " + code);
-          //keyLongDown(code);
           fastKey = code;
           fastMode = true;
         }

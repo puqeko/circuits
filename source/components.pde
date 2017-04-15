@@ -194,11 +194,15 @@ class Terminal extends Component {
     float i = super.scale;
     
     line(0, 0, super.len - 4 * i, 0);
-    //strokeWeight(2);
-    noFill();
     ellipseMode(CENTER);
     ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
-    fill(0);
+  }
+  
+  @Override void drawText(float ang) {
+    // adjust to place left or on top of component
+    //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+    
+    text(labelText, len + super.scale * 2, 6);
   }
 }
 

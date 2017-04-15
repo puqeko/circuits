@@ -43,12 +43,13 @@ class Cursor extends Mode {
 class LabelMode extends Mode {
   
   Component c;
-  int time;
+  int time = 0;
   boolean blink = true; // start with _ char
   String text = "";
   
   LabelMode(Component cm) {
-    super.name = "LabelMode";
+    super.name = "label";
+    println(super.name);
     
     if (!cm.labeled) {
       this.key(ESC); // pull out
@@ -60,7 +61,7 @@ class LabelMode extends Mode {
   }
   
   @Override void draw() {
-    if (text != "") c.labelText = text;
+    if (text.length() > 0) c.labelText = text;
     else {
       c.labelText = blink ? "_" : "";
       
@@ -75,6 +76,7 @@ class LabelMode extends Mode {
   @Override void select(int code) {
     if (code >= 48 && code <= 122) { //common chars
           text += char(code);
+          println("add");
     } else if (code == 8) { // delete
       if (text.length() > 0) text = text.substring(0, text.length() - 1);
     }
@@ -88,11 +90,10 @@ class LabelMode extends Mode {
       case ENTER:
       case ' ':
       case LEFT: case RIGHT: case UP: case DOWN:
-      case 'j': case 'k': case 'l': case 'h':
-      case 'w': case 'a': case 's': case 'd':
         cursor.freeze = false;
         if (c.labelText == "_") c.labelText = "";
-        mode = new DrawMode();
+        if (c.terminates) mode = new SelectionMode();
+        else mode = new DrawMode();
         break;
     }
   }
@@ -147,10 +148,17 @@ class DrawMode extends Mode {
       case ' ':
          activeComps[numComps++] = cur;
          
-         println(cur.labeled);
-         if (cur.terminates && !cur.labeled) mode = new SelectionMode();
-         else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
-         else mode = new LabelMode(cur);
+         if (!cur.labeled) {
+           if (cur.terminates) mode = new SelectionMode();
+           else mode = new DrawMode();
+         } else if (keyDown[16]) { // shift override
+           mode = new DrawMode();
+         } else {
+           mode = new LabelMode(cur);
+         }
+         //if (cur.terminates && !cur.labeled) mode = new SelectionMode();
+         //else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
+         //else mode = new LabelMode(cur);
          break;
       case 'u': // undo
         undo();
