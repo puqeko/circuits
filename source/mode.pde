@@ -1,7 +1,7 @@
 class Mode {
   String name;
   
-  void draw() {}
+  void draw(PGraphics g) {}
   void key(int code) {}
   
   int step = 10;
@@ -30,9 +30,9 @@ class Cursor extends Mode {
     super.name = "cursor";
   }
   
-  @Override void draw() {
-    rectMode(CENTER);
-    rect(x - x % 10, y - y % 10, 5, 5);
+  @Override void draw(PGraphics g) {
+    g.rectMode(CENTER);
+    g.rect(x - x % 10, y - y % 10, 5, 5);
   }
   
   @Override void select(int code) {
@@ -60,7 +60,7 @@ class LabelMode extends Mode {
     time = millis();
   }
   
-  @Override void draw() {
+  @Override void draw(PGraphics g) {
     if (text.length() > 0) c.labelText = text;
     else {
       c.labelText = blink ? "_" : "";
@@ -231,9 +231,9 @@ class DrawMode extends Mode {
     }
   }
   
-  @Override void draw() {
+  @Override void draw(PGraphics g) {
     cur.resize(x, y, cursor.x, cursor.y);
-    cur.draw();
+    cur.draw(g);
   }
   
   // draw mode helpers

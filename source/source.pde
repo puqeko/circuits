@@ -3,17 +3,26 @@ Component[] historyComps = new Component[1000];
 int numComps = 0, numHistoryComps = 0;
 
 PFont fnt;
+PGraphics g;
 
 void setup() {
   size(500, 500);
-  stroke(255);
-  fill(255);
-  smooth();
-  strokeWeight(3);
-  
   fnt = createFont("Monospaced-48", 16, true);
-  textFont(fnt, 16);
+  g = createGraphics(500, 500);
+  
+  g.beginDraw();
+  g.smooth();
+  resetStyle(g);
+  g.textFont(fnt, 16);
+  g.endDraw();
+  
   drawScene();
+}
+
+void resetStyle(PGraphics g) {
+  g.strokeWeight(3);
+  g.stroke(255);
+  g.fill(255);
 }
 
 Cursor cursor = new Cursor();
@@ -35,35 +44,29 @@ void draw() {
     drawScene();
   }
   if (mode.name == "label") {
-     drawScene();
+     drawScene(); // so that blinker updates
   }
+  
+  println(frameRate);
 }
 
 void drawScene() {
-  background(0);
-  drawScene(false);
+  g.beginDraw();
+  g.background(0);
+  
+  cursor.draw(g);
+  mode.draw(g);
+  
+  for (int i = 0; i < numComps; i++) {
+    activeComps[i].draw(g);
+  }
+  g.endDraw();
+  
+  image(g, 50, 50);
 }
 
 // save reversed out image (black on white)
 void printScene() {
-  stroke(0);
-  fill(0);
-  background(255);
-  drawScene(true);
   save("out");
-  stroke(255);
-  fill(255);
-  
   println("Saved");
-  drawScene();
-}
-
-void drawScene(boolean forPrint) {
-    
-  if (!forPrint) cursor.draw();
-  mode.draw();
-  
-  for (int i = 0; i < numComps; i++) {
-    activeComps[i].draw();
-  }
 }

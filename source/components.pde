@@ -9,29 +9,29 @@ class Component {
   String labelText = "";
   int labelDistanceFactor = 6;
   
-  void draw() {
-    pushMatrix();
-    translate(x, y);
-    pushMatrix();
+  void draw(PGraphics g) {
+    g.pushMatrix();
+    g.translate(x, y);
+    g.pushMatrix();
     
     float ang = atan2(yend - y, xend - x);
-    rotate(ang);
+    g.rotate(ang);
     
     if (x > xend) scale(1, -1); // correct orientation
-    drawShape();
+    drawShape(g);
     
-    popMatrix();
+    g.popMatrix();
     if (labeled && labelText.length() > 0) {
-      drawText(ang);
+      drawText(g, ang);
     }
-    popMatrix();
+    g.popMatrix();
   }
   
-  void drawShape() {
-    line(0, 0, 0 + len, 0);
+  void drawShape(PGraphics g) {
+    g.line(0, 0, 0 + len, 0);
   }
   
-  void drawText(float ang) {
+  void drawText(PGraphics g, float ang) {
     // To do: Add centering adjustment
     
     // midpoint
@@ -41,7 +41,7 @@ class Component {
     // adjust to place left or on top of component
     ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
-    text(labelText,
+    g.text(labelText,
       xnew - cos(ang) * scale * labelDistanceFactor,
       ynew - sin(ang) * scale * labelDistanceFactor);
   }
@@ -71,19 +71,19 @@ class Resistor extends Component {
     tails = (len - zigLen) / 2;
   }
   
-  @Override void drawShape() {
+  @Override void drawShape(PGraphics g) {
     float i = super.scale;
     float x = 0 + tails, y = 0;
     
-    line(0, 0, x, y);
+    g.line(0, 0, x, y);
     float start = 0, j = 0;
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
-      line(start, y, start + 1 * i, y + 2 * i);
-      line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
-      line(start + 3 * i, y - 2 * i, start + 4 * i, y);
+      g.line(start, y, start + 1 * i, y + 2 * i);
+      g.line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
+      g.line(start + 3 * i, y - 2 * i, start + 4 * i, y);
     }
-    line(start + 4 * i, y, start + 4 * i + tails, y);
+    g.line(start + 4 * i, y, start + 4 * i + tails, y);
   }
 }
 
@@ -105,19 +105,19 @@ class Inductor extends Component {
     tails = (len - zigLen) / 2;
   }
   
-  @Override void drawShape() {
+  @Override void drawShape(PGraphics g) {
     float i = super.scale;
     float x = tails;
     
-    line(0, 0, x, 0);
-    noFill();
+    g.line(0, 0, x, 0);
+    g.noFill();
     float start = 0, j = 0;
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
-      arc(start + 2 * i, 0, 4 * i, 8 * i, -PI, 0);
+      g.arc(start + 2 * i, 0, 4 * i, 8 * i, -PI, 0);
     }
-    fill(255);
-    line(start + 4 * i, 0, start + 4 * i + tails, 0);
+    g.fill(255);
+    g.line(start + 4 * i, 0, start + 4 * i + tails, 0);
   }
 }
 
@@ -138,17 +138,15 @@ class Capacitor extends Component {
     tails = (len - capLen) / 2;
   }
   
-  @Override void drawShape() {
+  @Override void drawShape(PGraphics g) {
     float i = super.scale;
     float x = 0 + tails;
     
-    line(0, 0, x, 0);
-    //strokeWeight(2);
-    line(x, 0 - i * 4, x, 0 + i * 4);
+    g.line(0, 0, x, 0);
+    g.line(x, 0 - i * 4, x, 0 + i * 4);
     float capEnd = x + capLen;
-    line(capEnd, 0 - i * 4, capEnd, 0 + i * 4);
-    //strokeWeight(1);
-    line(capEnd, 0, capEnd + tails, 0);
+    g.line(capEnd, 0 - i * 4, capEnd, 0 + i * 4);
+    g.line(capEnd, 0, capEnd + tails, 0);
   }
 }
 
@@ -168,17 +166,15 @@ class Cell extends Component {
     tails = (len - capLen) / 2;
   }
   
-  @Override void drawShape() {
+  @Override void drawShape(PGraphics g) {
     float i = super.scale;
     float x = 0 + tails;
     
-    line(0, 0, x, 0);
-    //strokeWeight(2);
-    line(x, 0 - i * 2, x, 0 + i * 2);
+    g.line(0, 0, x, 0);
+    g.line(x, 0 - i * 2, x, 0 + i * 2);
     float capEnd = x + capLen;
-    line(capEnd, 0 - i * 5, capEnd, 0 + i * 5);
-    //strokeWeight(1);
-    line(capEnd, 0, capEnd + tails, 0);
+    g.line(capEnd, 0 - i * 5, capEnd, 0 + i * 5);
+    g.line(capEnd, 0, capEnd + tails, 0);
   }
 }
 
@@ -190,19 +186,18 @@ class Terminal extends Component {
     super.resize(x, y, u, v);
   }
   
-  @Override void drawShape() {
+  @Override void drawShape(PGraphics g) {
     float i = super.scale;
     
-    line(0, 0, super.len - 4 * i, 0);
-    ellipseMode(CENTER);
-    ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
+    g.line(0, 0, super.len - 4 * i, 0);
+    g.ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
   }
   
-  @Override void drawText(float ang) {
+  @Override void drawText(PGraphics g, float ang) {
     // adjust to place left or on top of component
     //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
-    text(labelText, len + super.scale * 2, 6);
+    g.text(labelText, len + super.scale * 2, 6);
   }
 }
 
