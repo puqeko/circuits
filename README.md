@@ -9,7 +9,7 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
 - Make inductor symbol more fancy
 - Use super sampling.
 
-<img width="501" alt="2017-04-15 at 7 54 15 pm" src="https://cloud.githubusercontent.com/assets/12654833/25061942/bae19b98-2215-11e7-8f0c-0771e79b28d9.png">
+<img width="502" alt="2017-04-16 at 8 24 03 pm" src="https://cloud.githubusercontent.com/assets/12654833/25069929/19e05b20-22e3-11e7-889d-64357f088005.png">
 
 ### Controls
 - You start in selection mode. Use the arrow keys to move the sqaure cursor.
