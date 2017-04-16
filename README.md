@@ -20,7 +20,7 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
   - Inductor <kbd>i</kbd>
   - Battery Cell <kbd>b</kbd>
   - Open Circuit <kbd>o</kbd>
-  - Wire <kbd>;</kbd> or <kbd>;</kbd> (Default)
+  - Wire <kbd>;</kbd> (Default)
 - Use the arrow keys to set the ending position for the current component, then <kbd>Space</kbd> to place it.
 - For components other than a wire, you enter label mode to enter a value or variable name. Use the arrow keys or enter key to continue to draw mode.
 - Exit drawing mode with <kbd>ESC</kbd> or <kbd>Enter</kbd> to go back to selection mode. Certain components, such as an open circuit, will exit to selection mode automatically.
