@@ -277,8 +277,15 @@ class CurrentSource extends Component {
     
     // arrow
     g.line(arrowStart, y, arrowPoint, y);
-    g.line(arrowPoint, y, arrowHeadStart, arrowHeadHeight);
-    g.line(arrowPoint, y, arrowHeadStart, -arrowHeadHeight);
+    
+    // arrow head
+    g.noFill();
+    g.beginShape();
+    g.vertex(arrowHeadStart, arrowHeadHeight);
+    g.vertex(arrowPoint, y);
+    g.vertex(arrowHeadStart, -arrowHeadHeight);
+    g.endShape();
+    resetStyle(g);
     
     g.line(x + circLen, y, x + circLen + tails, y); // trail line
   }
@@ -362,8 +369,15 @@ class DepCurrentSource extends Component {
     
     // arrow
     g.line(arrowStart, y, arrowPoint, y);
-    g.line(arrowPoint, y, arrowHeadStart, arrowHeadHeight);
-    g.line(arrowPoint, y, arrowHeadStart, -arrowHeadHeight);
+    
+    // arrow head
+    g.noFill();
+    g.beginShape();
+    g.vertex(arrowHeadStart, arrowHeadHeight);
+    g.vertex(arrowPoint, y);
+    g.vertex(arrowHeadStart, -arrowHeadHeight);
+    g.endShape();
+    resetStyle(g);
     
     x += extraLen / 2; 
     x += diamLen; // to end of diagonal
