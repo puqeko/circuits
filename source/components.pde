@@ -17,7 +17,10 @@ class Component {
     float ang = atan2(yend - y, xend - x);
     g.rotate(ang);
     
-    if (x > xend) g.scale(1, -1); // correct orientation
+    if (x > xend || // correct orientation
+      (x == xend && y > yend)) // consisent vertial case
+      g.scale(1, -1);
+    
     drawShape(g);
     
     g.popMatrix();
@@ -119,8 +122,7 @@ class Inductor extends Component {
       start = x + j * 4 * i;
       g.arc(start + 2 * i, 0, 4 * i, 8 * i, -PI, 0);
     }
-    resetThick(g);
-    g.fill(255);
+    resetStyle(g);
     g.line(start + 4 * i, 0, start + 4 * i + tails, 0);
   }
 }
@@ -198,7 +200,9 @@ class Terminal extends Component {
     float i = super.scale;
     
     g.line(0, 0, super.len - 4 * i, 0);
+    g.noFill();
     g.ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
+    resetStyle(g);
   }
   
   @Override void drawText(PGraphics g, float ang) {
@@ -208,6 +212,215 @@ class Terminal extends Component {
     g.text(labelText, len + super.scale * 2, 6);
   }
 }
+
+class Ground extends Component {
+  // from x, y to u, v
+  Ground(int x, int y, int u, int v) {
+    super.terminates = true;
+    super.minLen = super.scale * 4;
+    super.resize(x, y, u, v);
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float i = super.scale;
+    
+    g.line(0, 0, len - 4 * i, 0);
+    
+    // ground symbol
+    thickStyle(g);
+    g.line(len - 4 * i, -i * 4, len - 4 * i, i * 4);
+    g.line(len - 2 * i, -i * 2.5, len - 2 * i, i * 2.5);
+    g.line(len, -i, len, i); 
+    resetThick(g);
+  }
+  
+  @Override void drawText(PGraphics g, float ang) {
+    // adjust to place left or on top of component
+    //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+    
+    g.text(labelText, len + super.scale * 2, 6);
+  }
+}
+
+class CurrentSource extends Component {
+  
+  float tails;
+  float circLen;
+  
+  // from x, y to u, v
+  CurrentSource(int x, int y, int u, int v) {
+    circLen = 8 * super.scale;
+    minLen = circLen + 2 * super.scale;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - circLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float x = tails, y = 0;
+    
+    g.line(0, 0, x, y); // leader line
+    thickStyle(g);
+    g.noFill();
+    g.ellipse(x + circLen / 2, y, circLen, circLen); // circle
+    resetStyle(g);
+    float arrowStart = x + circLen / 5;
+    float arrowPoint = x + 4 * circLen / 5;
+    float arrowHeadStart = x + 2 * circLen / 3;
+    float arrowHeadHeight = (arrowPoint - arrowHeadStart); // / 5 * 4;
+    //g.triangle(arrowPoint, y,
+    //  arrowHeadStart, arrowHeadHeight,
+    //  arrowHeadStart, -arrowHeadHeight + 0.5);
+    
+    // arrow
+    g.line(arrowStart, y, arrowPoint, y);
+    g.line(arrowPoint, y, arrowHeadStart, arrowHeadHeight);
+    g.line(arrowPoint, y, arrowHeadStart, -arrowHeadHeight);
+    
+    g.line(x + circLen, y, x + circLen + tails, y); // trail line
+  }
+}
+
+class VoltageSource extends Component {
+  
+  float tails;
+  float circLen;
+  
+  // from x, y to u, v
+  VoltageSource(int x, int y, int u, int v) {
+    circLen = 8 * super.scale;
+    minLen = circLen + 2 * super.scale;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - circLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float x = tails, y = 0;
+    
+    g.line(0, 0, x, y); // leader line
+    thickStyle(g);
+    g.noFill();
+    g.ellipse(x + circLen / 2, y, circLen, circLen);
+    resetStyle(g);
+    float start = x + circLen / 5;
+    float end = x + 4 * circLen / 5;
+    
+    // minus
+    g.line(start, y, start + circLen / 5, y);
+    
+    // plus
+    g.line(end - circLen / 5, y, end, y);
+    g.line(end - circLen / 10, circLen / 10,
+    end - circLen / 10, - circLen / 10 + 1); // correct pixel error temporerarly
+    
+    g.line(x + circLen, y, x + circLen + tails, y); // trail line
+  }
+}
+
+class DepCurrentSource extends Component {
+  
+  float tails;
+  float diamLen, extraLen;
+  
+  // from x, y to u, v
+  DepCurrentSource(int x, int y, int u, int v) {
+    diamLen = 8 * super.scale;
+    extraLen = 2 * super.scale;
+    minLen = diamLen + extraLen + 2 * super.scale;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - diamLen - extraLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float x = tails, y = 0, tot = extraLen + diamLen;
+    
+    g.line(0, 0, x, y); // leader line
+    thickStyle(g);
+    g.noFill();
+    //g.ellipse(x + diamLen / 2, y, diamLen, diamLen); // circle
+    g.quad(x, y, x + tot / 2, y + diamLen / 2,
+      x + tot, y, x + tot / 2, y - diamLen / 2);
+    resetStyle(g);
+    
+    x += extraLen / 2; // to start of arrow, make sure in same place as current source
+    
+    float arrowStart = x + diamLen / 5;
+    float arrowPoint = x + 4 * diamLen / 5;
+    float arrowHeadStart = x + 2 * diamLen / 3;
+    float arrowHeadHeight = (arrowPoint - arrowHeadStart); // / 5 * 4;
+    
+    // arrow
+    g.line(arrowStart, y, arrowPoint, y);
+    g.line(arrowPoint, y, arrowHeadStart, arrowHeadHeight);
+    g.line(arrowPoint, y, arrowHeadStart, -arrowHeadHeight);
+    
+    x += extraLen / 2; 
+    x += diamLen; // to end of diagonal
+    
+    g.line(x, y, x + tails, y); // trail line
+  }
+}
+
+class DepVoltageSource extends Component {
+  
+  float tails;
+  float diamLen, extraLen;
+  
+  // from x, y to u, v
+  DepVoltageSource(int x, int y, int u, int v) {
+    diamLen = 8 * super.scale;
+    extraLen = 2 * super.scale;
+    minLen = diamLen + extraLen + 2 * super.scale;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - diamLen - extraLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float x = tails, y = 0, tot = extraLen + diamLen;
+    
+    g.line(0, 0, x, y); // leader line
+    thickStyle(g);
+    g.noFill();
+    //g.ellipse(x + diamLen / 2, y, diamLen, diamLen); // circle
+    g.quad(x, y, x + tot / 2, y + diamLen / 2,
+      x + tot, y, x + tot / 2, y - diamLen / 2);
+    resetStyle(g);
+    
+    x += extraLen / 2; // to start of arrow, make sure in same place as current source
+    
+    float start = x + diamLen / 5;
+    float end = x + 4 * diamLen / 5;
+    
+    // minus
+    g.line(start, y, start + diamLen / 5, y);
+    
+    // plus
+    g.line(end - diamLen / 5, y, end, y);
+    g.line(end - diamLen / 10, diamLen / 10,
+    end - diamLen / 10, - diamLen / 10 + 1); // correct pixel error temporerarly
+    
+    x += extraLen / 2; 
+    x += diamLen; // to end of diagonal
+    
+    g.line(x, y, x + tails, y); // trail line
+  }
+}
+
 
 class Wire extends Component {
   

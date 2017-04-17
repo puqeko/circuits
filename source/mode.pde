@@ -146,19 +146,20 @@ class DrawMode extends Mode {
       case RETURN:
         cur.terminates = true;
       case ' ':
-         activeComps[numComps++] = cur;
+         if (leng(x, y, cursor.x, cursor.y) > cur.minLen / 2) {
+           activeComps[numComps++] = cur;
          
-         if (!cur.labeled) {
-           if (cur.terminates) mode = new SelectionMode();
-           else mode = new DrawMode();
-         } else if (keyDown[16]) { // shift override
-           mode = new DrawMode();
-         } else {
-           mode = new LabelMode(cur);
+           if (!cur.labeled) {
+             if (cur.terminates) mode = new SelectionMode();
+             else mode = new DrawMode();
+           } else if (keyDown[16]) { // shift override
+             mode = new DrawMode();
+           } else {
+             mode = new LabelMode(cur);
+           }
+         } else { // discard if too short
+           mode = new SelectionMode();
          }
-         //if (cur.terminates && !cur.labeled) mode = new SelectionMode();
-         //else if (keyDown[16] || !cur.labeled) mode = new DrawMode(); // shift to bipass entering label text
-         //else mode = new LabelMode(cur);
          break;
       case 'u': // undo
         undo();
@@ -169,9 +170,14 @@ class DrawMode extends Mode {
       case 'r': cur = new Resistor(x, y, cursor.x, cursor.y); break;
       case ';': cur = new Wire(x, y, cursor.x, cursor.y); break;
       case 'c': cur = new Capacitor(x, y, cursor.x, cursor.y); break;
-      case 'i': cur = new Inductor(x, y, cursor.x, cursor.y); break;
+      case 'l': cur = new Inductor(x, y, cursor.x, cursor.y); break;
       case 'b': cur = new Cell(x, y, cursor.x, cursor.y); break;
       case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;
+      case 'i': cur = new CurrentSource(x, y, cursor.x, cursor.y); break;
+      case 'I': cur = new DepCurrentSource(x, y, cursor.x, cursor.y); break;
+      case 'v': cur = new VoltageSource(x, y, cursor.x, cursor.y); break;
+      case 'V': cur = new DepVoltageSource(x, y, cursor.x, cursor.y); break;
+      case 'g': cur = new Ground(x, y, cursor.x, cursor.y); break;
     }
   }
   
