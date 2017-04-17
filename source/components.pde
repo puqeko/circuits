@@ -90,7 +90,7 @@ class Resistor extends Component {
     g.noFill();
     g.strokeJoin(BEVEL);
     g.beginShape();
-    g.vertex(x + j * 4 * i, y);
+    g.vertex(x + j * 4 * i, y - 1);
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
       g.vertex(start + 1 * i, y + 2 * i);
@@ -98,8 +98,8 @@ class Resistor extends Component {
       g.vertex(start + 4 * i, y);
     }
     g.endShape();
-    resetThick(g);
-    g.line(start + 4 * i, y, start + 4 * i + tails, y);
+    resetStyle(g);
+    g.line(start + 4 * i, y, start + 4 * i + tails, y + 1);
   }
 }
 
