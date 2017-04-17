@@ -178,6 +178,7 @@ class DrawMode extends Mode {
       case 'v': cur = new VoltageSource(x, y, cursor.x, cursor.y); break;
       case 'V': cur = new DepVoltageSource(x, y, cursor.x, cursor.y); break;
       case 'g': cur = new Ground(x, y, cursor.x, cursor.y); break;
+      case 't': cur = new BJTransistor(x, y, cursor.x, cursor.y); break;
     }
   }
   

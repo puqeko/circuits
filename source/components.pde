@@ -421,6 +421,64 @@ class DepVoltageSource extends Component {
   }
 }
 
+class BJTransistor extends Component {
+  
+  float capLen = super.scale * 2;
+  float tails, extraLen;
+  
+  // from x, y to u, v
+  BJTransistor(int x, int y, int u, int v) {
+    super.labeled = false;
+    super.terminates = true;
+    minLen = super.scale * 4;
+    extraLen = 10 * super.scale;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - capLen - extraLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float i = super.scale;
+    float x = tails, y = 0;
+    float tot = extraLen + capLen;
+    
+    g.noFill();
+    //g.noStroke();
+    g.ellipse(x + tot / 2, y, tot, tot); // circle
+    resetStyle(g);
+    
+    x += extraLen / 3;
+    g.line(0, 0, x, 0);
+    
+    thickStyle(g);
+    g.line(x, 0 - i * 4, x, 0 + i * 4);
+    resetThick(g);
+    
+    float xterm = x + extraLen / 2 + i * 2;
+    float yterm = extraLen / 2;
+    
+    xterm = xterm - xterm % 10;
+    
+    // angles
+    g.line(x, i, xterm, yterm);
+    g.line(x, -i, xterm, -yterm);
+    
+    // terminals
+    g.line(xterm, yterm, xterm, extraLen);
+    g.line(xterm, -yterm, xterm, -extraLen);
+  }
+}
+
+    //float x = tails, y = 0, tot = extraLen + diamLen;
+    //float i = super.scale;
+    
+    //g.fill(50);
+    //g.noStroke();
+    //g.ellipse(x + tot / 2, y, tot, tot); // circle
+    //resetStyle(g);
 
 class Wire extends Component {
   

@@ -16,6 +16,7 @@ void setup() {
   g = createGraphics(500, 500);
   
   g.beginDraw();
+  g.strokeCap(SQUARE);
   resetStyle(g);
   g.textFont(fnt, 16);
   g.endDraw();
