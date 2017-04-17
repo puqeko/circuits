@@ -424,67 +424,82 @@ class DepVoltageSource extends Component {
 class BJTransistor extends Component {
   
   float capLen = super.scale * 2;
-  float tails, extraLen;
+  float circSize = super.scale * 10;
+  int leadingTail;
+  
+  boolean isPNP;
   
   // from x, y to u, v
-  BJTransistor(int x, int y, int u, int v) {
-    super.labeled = false;
-    super.terminates = true;
-    minLen = super.scale * 4;
-    extraLen = 10 * super.scale;
+  BJTransistor(int x, int y, int u, int v, boolean isPNP) {
+    this.labeled = false;
+    this.terminates = true;
     this.resize(x, y, u, v);
+    this.isPNP = isPNP;
   }
   
   @Override void resize(int a, int b, int u, int v) {
     super.resize(a, b, u, v);
-    tails = (len - capLen - extraLen) / 2;
+    float tail = len - circSize;
+    leadingTail = int(tail - tail % 10) + 10;
   }
   
   @Override void drawShape(PGraphics g) {
     float i = super.scale;
-    float x = tails, y = 0;
-    float tot = extraLen + capLen;
+    float x = leadingTail, y = 0;
+    float tot = circSize;
     
     g.noFill();
-    //g.noStroke();
     g.ellipse(x + tot / 2, y, tot, tot); // circle
     resetStyle(g);
     
-    x += extraLen / 3;
+    x += circSize / 3;
     g.line(0, 0, x, 0);
     
     thickStyle(g);
-    g.line(x, 0 - i * 4, x, 0 + i * 4);
+    g.line(x, 0 - i * 3.5, x, 0 + i * 3.5);
     resetThick(g);
     
-    float xterm = x + extraLen / 2 + i * 2;
-    float yterm = extraLen / 2;
-    
-    xterm = xterm - xterm % 10;
+    float xterm = leadingTail + circSize - 10;
+    float yterm = sqrt(sq(circSize / 2) - sq(circSize / 2 - 10)); // align to circle
     
     // angles
-    g.line(x, i, xterm, yterm);
-    g.line(x, -i, xterm, -yterm);
+    g.line(x, i * 1.5, xterm, yterm);
+    g.line(x, -i * 1.5, xterm, -yterm);
     
     // terminals
-    g.line(xterm, yterm, xterm, extraLen);
-    g.line(xterm, -yterm, xterm, -extraLen);
+    g.line(xterm, yterm, xterm, circSize);
+    g.line(xterm, -yterm, xterm, -circSize);
+    
+    float arrowLen = circSize / 5;
+    float xarr = sqrt(sq(xterm - leadingTail - circSize / 3) + sq(yterm - i * 1.5)) - arrowLen;
+    
+    // arrow head
+    // Todo: Redo this less horribly
+    g.translate(leadingTail + circSize / 3, (yterm - i * 1.5 - arrowLen / 2) * (isPNP ? 1 : -1)); // this is not correct
+    g.pushMatrix();
+    g.rotate(atan((isPNP ? 1 : -1) * (yterm - i * 1.5) / (xarr + arrowLen)));
+    g.pushMatrix();
+    g.beginShape();
+    if (isPNP) {
+      g.vertex(xarr - 2, arrowLen / 3);
+      g.vertex(xarr + arrowLen - 2, 0);
+      g.vertex(xarr - 2, -arrowLen / 3);
+    } else {
+      g.vertex(arrowLen + 2, arrowLen / 3);
+      g.vertex(2, 1);
+      g.vertex(arrowLen + 2, -arrowLen / 3);
+    }
+    g.endShape();
+    g.popMatrix();
+    g.popMatrix();
+    resetStyle(g);
   }
 }
 
-    //float x = tails, y = 0, tot = extraLen + diamLen;
-    //float i = super.scale;
-    
-    //g.fill(50);
-    //g.noStroke();
-    //g.ellipse(x + tot / 2, y, tot, tot); // circle
-    //resetStyle(g);
-
 class Wire extends Component {
-  
   Wire(int x, int y, int u, int v) {
-    super.minLen = 1;
-    super.resize(x, y, u, v);
-    super.labeled = false;
+    this.minLen = 1;
+    this.resize(x, y, u, v);
+    this.labeled = false;
   }
 }
