@@ -81,12 +81,23 @@ class Resistor extends Component {
     g.line(0, 0, x, y);
     float start = 0, j = 0;
     thickStyle(g);
+    //for (j = 0; j < 3; j++) {
+    //  start = x + j * 4 * i;
+    //  g.line(start, y, start + 1 * i, y + 2 * i);
+    //  g.line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
+    //  g.line(start + 3 * i, y - 2 * i, start + 4 * i, y);
+    //}
+    g.noFill();
+    g.strokeJoin(BEVEL);
+    g.beginShape();
+    g.vertex(x + j * 4 * i, y);
     for (j = 0; j < 3; j++) {
       start = x + j * 4 * i;
-      g.line(start, y, start + 1 * i, y + 2 * i);
-      g.line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
-      g.line(start + 3 * i, y - 2 * i, start + 4 * i, y);
+      g.vertex(start + 1 * i, y + 2 * i);
+      g.vertex(start + 3 * i, y - 2 * i);
+      g.vertex(start + 4 * i, y);
     }
+    g.endShape();
     resetThick(g);
     g.line(start + 4 * i, y, start + 4 * i + tails, y);
   }
@@ -426,7 +437,7 @@ class DepVoltageSource extends Component {
     // plus
     g.line(end - diamLen / 5, y, end, y);
     g.line(end - diamLen / 10, diamLen / 10,
-    end - diamLen / 10, - diamLen / 10 + 1); // correct pixel error temporerarly
+    end - diamLen / 10, - diamLen / 10); // correct pixel error temporerarly
     
     x += extraLen / 2; 
     x += diamLen; // to end of diagonal
