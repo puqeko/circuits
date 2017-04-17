@@ -173,11 +173,28 @@ class DrawMode extends Mode {
       case 'l': cur = new Inductor(x, y, cursor.x, cursor.y); break;
       case 'b': cur = new Cell(x, y, cursor.x, cursor.y); break;
       case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;
-      case 'i': cur = new CurrentSource(x, y, cursor.x, cursor.y); break;
+      case 'i':
+        if (!(cur instanceof CurrentSource)) {
+          cur = new CurrentSource(x, y, cursor.x, cursor.y);
+          break;
+        }
+        // else make dependant
       case 'I': cur = new DepCurrentSource(x, y, cursor.x, cursor.y); break;
-      case 'v': cur = new VoltageSource(x, y, cursor.x, cursor.y); break;
+      case 'v':
+        if (!(cur instanceof VoltageSource)) {
+          cur = new VoltageSource(x, y, cursor.x, cursor.y);
+          break;
+        }
+        // else make dependant
       case 'V': cur = new DepVoltageSource(x, y, cursor.x, cursor.y); break;
       case 'g': cur = new Ground(x, y, cursor.x, cursor.y); break;
+      case 't':
+        // toggle 
+        boolean isPNP = true;
+        if (cur instanceof BJTransistor)
+          ((BJTransistor)cur).isPNP = !((BJTransistor)cur).isPNP;
+        else cur = new BJTransistor(x, y, cursor.x, cursor.y, isPNP);
+        break;
     }
   }
   
