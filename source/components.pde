@@ -95,11 +95,11 @@ class Resistor extends Component {
       start = x + j * 4 * i;
       g.vertex(start + 1 * i, y + 2 * i);
       g.vertex(start + 3 * i, y - 2 * i);
-      g.vertex(start + 4 * i, y);
+      g.vertex(start + 4 * i, y + 1);
     }
     g.endShape();
     resetStyle(g);
-    g.line(start + 4 * i, y, start + 4 * i + tails, y + 1);
+    g.line(start + 4 * i, y, start + 4 * i + tails, y);
   }
 }
 
