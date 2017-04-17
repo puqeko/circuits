@@ -9,7 +9,6 @@ PGraphics g;
 
 void setup() {
   size(500, 500);
-  SCALE = 2;
   smooth();
   // leave this, then use noSmooth + blur and custom
   // downscaling for image export.
@@ -78,7 +77,7 @@ void drawScene() {
   g.beginDraw();
   g.clear();
   
-  cursor.draw(g);
+  if (!isPrintStyle) cursor.draw(g);
   mode.draw(g);
   
   for (int i = 0; i < numComps; i++) {
@@ -91,7 +90,6 @@ void drawScene() {
 // save reversed out image (black on white)
 void printScene() {
   isPrintStyle = true;
-  
   resetStyle(g);
   drawScene();
   g.save("out.png");
