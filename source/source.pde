@@ -2,12 +2,14 @@ Component[] activeComps = new Component[1000];
 Component[] historyComps = new Component[1000];
 int numComps = 0, numHistoryComps = 0;
 
+boolean isPrintStyle = false;
+
 PFont fnt;
 PGraphics g;
 
 void setup() {
   size(500, 500);
-  
+  SCALE = 2;
   smooth();
   // leave this, then use noSmooth + blur and custom
   // downscaling for image export.
@@ -16,7 +18,6 @@ void setup() {
   g = createGraphics(500, 500);
   
   g.beginDraw();
-  g.strokeCap(SQUARE);
   resetStyle(g);
   g.textFont(fnt, 16);
   g.endDraw();
@@ -26,16 +27,24 @@ void setup() {
 
 void resetStyle(PGraphics g) {
   resetThick(g);
-  g.stroke(255);
-  g.fill(255);
+  
+  if (!isPrintStyle) {
+    g.stroke(255);
+    g.fill(255);
+  } else {
+    g.stroke(0);
+    g.fill(0);
+  }
+  
+  g.strokeCap(SQUARE);
 }
 
 void thickStyle(PGraphics g) {
-  g.strokeWeight(4);
+  g.strokeWeight(4 * SCALE);
 }
 
 void resetThick(PGraphics g) {
-  g.strokeWeight(2);
+  g.strokeWeight(2 * SCALE);
 }
 
 
@@ -65,8 +74,9 @@ void draw() {
 }
 
 void drawScene() {
+  background(0);
   g.beginDraw();
-  g.background(0);
+  g.clear();
   
   cursor.draw(g);
   mode.draw(g);
@@ -75,11 +85,17 @@ void drawScene() {
     activeComps[i].draw(g);
   }
   g.endDraw();
-  image(g, 0, 0, 500, 500);
+  if (!isPrintStyle) image(g, 0, 0, 500, 500);
 }
 
 // save reversed out image (black on white)
 void printScene() {
-  save("out");
+  isPrintStyle = true;
+  
+  resetStyle(g);
+  drawScene();
+  g.save("out.png");
+  isPrintStyle = false;
+  drawScene();
   println("Saved");
 }

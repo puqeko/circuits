@@ -1,5 +1,7 @@
+float SCALE = 1;
+
 class Component {
-  float scale = 4;
+  float scale = SCALE * 4;
   float len, minLen;
   int x, y;
   float xend, yend;
@@ -499,25 +501,24 @@ class BJTransistor extends Component {
     float xarr = sqrt(sq(xterm - leadingTail - circSize / 3) + sq(yterm - i * 1.5)) - arrowLen;
     
     // arrow head
-    // Todo: Redo this less horribly
-    g.translate(leadingTail + circSize / 3, (yterm - i * 1.5 - arrowLen / 2) * (isPNP ? 1 : -1)); // this is not correct
-    g.pushMatrix();
-    g.rotate(atan((isPNP ? 1 : -1) * (yterm - i * 1.5) / (xarr + arrowLen)));
-    g.pushMatrix();
-    g.beginShape();
-    if (isPNP) {
-      g.vertex(xarr - 2, arrowLen / 3);
-      g.vertex(xarr + arrowLen - 2, 0);
-      g.vertex(xarr - 2, -arrowLen / 3);
-    } else {
-      g.vertex(arrowLen + 2, arrowLen / 3);
-      g.vertex(2, 1);
-      g.vertex(arrowLen + 2, -arrowLen / 3);
-    }
-    g.endShape();
-    g.popMatrix();
-    g.popMatrix();
-    resetStyle(g);
+    // Todo: Redo this less horribly                    ????? 0.3 correction factor
+    //g.translate(leadingTail + circSize / 3, (yterm - i * 1.5) * (isPNP ? 1 : -1)); // this is not correct
+    //g.pushMatrix();
+    //g.rotate(atan((isPNP ? 1 : -1) * (yterm - i * 1.5) / (xarr + arrowLen)));
+    //g.pushMatrix();
+    //g.beginShape();
+    //if (isPNP) {
+    //  g.vertex(xarr, arrowLen / 3);
+    //  g.vertex(xarr + arrowLen, 0);
+    //  g.vertex(xarr, -arrowLen / 3);
+    //} else {
+    //  g.vertex(arrowLen, arrowLen / 3);
+    //  g.vertex(0, 0);
+    //  g.vertex(arrowLen, -arrowLen / 3);
+    //}
+    //g.endShape();
+    //g.popMatrix();
+    //g.popMatrix();
   }
 }
 
