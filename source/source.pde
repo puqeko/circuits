@@ -40,6 +40,7 @@ void resetStyle(PGraphics g) {
 
 void thickStyle(PGraphics g) {
   g.strokeWeight(4 * SCALE);
+  // note that 1, 3, 6 etc align with pixel grid, but look shit for circles.
 }
 
 void resetThick(PGraphics g) {

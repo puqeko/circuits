@@ -414,7 +414,7 @@ class DepVoltageSource extends Component {
     float start = x + diamLen / 10;
     float end = x + 9 * diamLen / 10;
     
-        // minus
+    // minus
     thickStyle(g);
     g.line(start, y, start + 3.5 * diamLen / 10, y);
     
