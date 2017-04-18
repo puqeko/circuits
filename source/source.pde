@@ -3,6 +3,7 @@ Component[] historyComps = new Component[1000];
 int numComps = 0, numHistoryComps = 0;
 
 boolean isPrintStyle = false;
+color drawingColour = color(0);
 
 PFont fnt;
 PGraphics g;
@@ -27,13 +28,8 @@ void setup() {
 void resetStyle(PGraphics g) {
   resetThick(g);
   
-  if (!isPrintStyle) {
-    g.stroke(255);
-    g.fill(255);
-  } else {
-    g.stroke(0);
-    g.fill(0);
-  }
+  g.stroke(drawingColour);
+  g.fill(drawingColour);
   
   g.strokeCap(SQUARE);
 }
@@ -74,10 +70,12 @@ void draw() {
 }
 
 void drawScene() {
-  background(0);
+  background(253, 246, 227);
   g.beginDraw();
-  g.clear();
+  g.background(drawingColour, 0);
+  g.endDraw();
   
+  g.beginDraw();
   if (!isPrintStyle) cursor.draw(g);
   mode.draw(g);
   
@@ -91,10 +89,13 @@ void drawScene() {
 // save reversed out image (black on white)
 void printScene() {
   isPrintStyle = true;
+  drawingColour = color(0);
   resetStyle(g);
   drawScene();
   g.save("out.png");
   isPrintStyle = false;
+  drawingColour = color(0); //toggle
+  resetStyle(g);
   drawScene();
   println("Saved");
 }
