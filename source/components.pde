@@ -72,6 +72,13 @@ class Component {
   }
 }
 
+class Wire extends Component {
+  Wire(int x, int y, int u, int v) {
+    this.minLen = 1;
+    this.resize(x, y, u, v);
+  }
+} 
+
 class Resistor extends Component {
   
   float zigs = 3, zigLen;
@@ -337,7 +344,7 @@ class CurrentSource extends Component {
     float arrowStart = x + circLen / 5;
     float arrowPoint = x + 4 * circLen / 5;
     
-    thickStyle(g);
+    //thickStyle(g);
     arrow(g, arrowStart, y, arrowPoint, y, this.scale *  1.5);
     resetThick(g);
     
@@ -377,7 +384,7 @@ class VoltageSource extends Component {
     float end = x + 9 * circLen / 10;
     
     // minus
-    thickStyle(g);
+    //thickStyle(g);
     g.line(start, y, start + 3 * circLen / 10, y);
     
     // plus
@@ -426,7 +433,7 @@ class DepCurrentSource extends Component {
     float arrowStart = x + diamLen / 5;
     float arrowPoint = x + 4 * diamLen / 5;
     
-    thickStyle(g);
+    //thickStyle(g);
     arrow(g, arrowStart, y, arrowPoint, y, this.scale *  1.5);
     resetThick(g);
     
@@ -474,7 +481,7 @@ class DepVoltageSource extends Component {
     float end = x + 9 * diamLen / 10;
     
     // minus
-    thickStyle(g);
+    //thickStyle(g);
     g.line(start, y, start + 3.5 * diamLen / 10, y);
     
     // plus
@@ -611,12 +618,5 @@ class FETransistor extends Component {
     g.endShape();
     
     resetStyle(g);
-  }
-}
-
-class Wire extends Component {
-  Wire(int x, int y, int u, int v) {
-    this.minLen = 1;
-    this.resize(x, y, u, v);
   }
 }
