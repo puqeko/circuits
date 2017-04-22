@@ -17,12 +17,21 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
 - Select a component type with the following keys
   - Resistor <kbd>r</kbd>
   - Capacitor <kbd>c</kbd>
-  - Inductor <kbd>i</kbd>
-  - Battery Cell <kbd>b</kbd>
+  - Inductor <kbd>l</kbd>
+  - Battery Cell<kbd>b</kbd>
   - Open Circuit <kbd>o</kbd>
+  - Voltage source<kbd>v</kbd>
+  - Dependant voltage source <kbd>Shift</kbd><kbd>V</kbd>
+  - Current source <kbd>i</kbd>
+  - Dependant current source <kbd>Shift</kbd><kbd>I</kbd>
+  - Bipolar Junction Transistor <kbd>t</kbd>
+  - Feild Effect Transistor <kbd>f</kbd>
+  - Ground <kbd>g</kbd>
   - Wire <kbd>;</kbd> (Default)
 - Use the arrow keys to set the ending position for the current component, then <kbd>Space</kbd> to place it.
 - For components other than a wire, you enter label mode to enter a value or variable name. Use the arrow keys or enter key to continue to draw mode.
 - Exit drawing mode with <kbd>ESC</kbd> or <kbd>Enter</kbd> to go back to selection mode. Certain components, such as an open circuit, will exit to selection mode automatically.
 
 Use <kbd>u</kbd> for undo, and <kbd>Shift</kbd><kbd>R</kbd> to redo.
+
+Press a key multiple times for simular components, e.g. press <kbd>b</kbd> twice for a two-cell battery, or <kbd>t</kbd> twice to change between a PNP and NPN transistor.
