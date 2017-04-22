@@ -171,7 +171,10 @@ class DrawMode extends Mode {
       case ';': cur = new Wire(x, y, cursor.x, cursor.y); break;
       case 'c': cur = new Capacitor(x, y, cursor.x, cursor.y); break;
       case 'l': cur = new Inductor(x, y, cursor.x, cursor.y); break;
-      case 'b': cur = new Cell(x, y, cursor.x, cursor.y); break;
+      case 'b':
+        if (cur instanceof Cell) cur = new TwoCell(x, y, cursor.x, cursor.y);
+        else cur = new Cell(x, y, cursor.x, cursor.y);
+        break;
       case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;
       case 'i':
         if (!(cur instanceof CurrentSource)) {

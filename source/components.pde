@@ -8,6 +8,7 @@ class Component {
   
   boolean terminates = false;
   boolean labeled = true;
+  boolean flipSymbol = true;
   String labelText = "";
   int labelDistanceFactor = 6;
   
@@ -20,8 +21,10 @@ class Component {
     g.rotate(ang);
     
     if (x > xend || // correct orientation
-      (x == xend && y > yend)) // consisent vertial case
-      g.scale(1, -1);
+      (x == xend && y > yend)) { // consisent vertial case
+      
+      if (flipSymbol) g.scale(1, -1);
+    }
     
     drawShape(g);
     
@@ -37,7 +40,6 @@ class Component {
   }
   
   void drawText(PGraphics g, float ang) {
-    // To do: Add centering adjustment
     
     // midpoint
     float xnew = len * cos(ang) / 2;
@@ -45,6 +47,12 @@ class Component {
     
     // adjust to place left or on top of component
     ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
+    
+    if (x != xend && y == yend) textTopStyle(g); // x-axis
+    else if (y != yend && x == xend) textSideStyle(g); // y-axis
+    else if (xend - x == yend - y) // +ve diagonal
+        textSideStyle(g);
+    else textLeftStyle(g);
     
     g.text(labelText,
       xnew - cos(ang) * scale * labelDistanceFactor,
@@ -65,9 +73,10 @@ class Resistor extends Component {
   
   // from x, y to u, v
   Resistor(int x, int y, int u, int v) {
-    super.labelDistanceFactor = 5;
-    zigLen = 4 * super.scale * zigs;
-    minLen = zigLen + 4 * super.scale;
+    this.labelDistanceFactor = 3;
+    this.flipSymbol = false;
+    zigLen = 4 * this.scale * zigs;
+    minLen = zigLen + 4 * this.scale;
     this.resize(x, y, u, v);
   }
   
@@ -77,7 +86,7 @@ class Resistor extends Component {
   }
   
   @Override void drawShape(PGraphics g) {
-    float i = super.scale;
+    float i = this.scale;
     float x = 0 + tails, y = 0;
     
     g.line(0, 0, x, y);
@@ -112,9 +121,9 @@ class Inductor extends Component {
   
   // from x, y to u, v
   Inductor(int x, int y, int u, int v) {
-    super.labelDistanceFactor = 7;
-    zigLen = 4 * super.scale * zigs;
-    minLen = zigLen + 4 * super.scale;
+    this.labelDistanceFactor = 7;
+    zigLen = 4 * this.scale * zigs;
+    minLen = zigLen + 4 * this.scale;
     this.resize(x, y, u, v);
   }
   
@@ -124,7 +133,7 @@ class Inductor extends Component {
   }
   
   @Override void drawShape(PGraphics g) {
-    float i = super.scale;
+    float i = this.scale;
     float x = tails;
     
     g.line(0, 0, x, 0);
@@ -142,12 +151,13 @@ class Inductor extends Component {
 
 class Capacitor extends Component {
   
-  float capLen = super.scale * 2;
+  float capLen = this.scale * 2;
   float tails;
   
   // from x, y to u, v
   Capacitor(int x, int y, int u, int v) {
-    super.labelDistanceFactor = 7;
+    this.flipSymbol = false;
+    this.labelDistanceFactor = 7;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -178,6 +188,8 @@ class Cell extends Component {
   
   // from x, y to u, v
   Cell(int x, int y, int u, int v) {
+    this.labelDistanceFactor = 7;
+    this.flipSymbol = false;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -201,20 +213,57 @@ class Cell extends Component {
   }
 }
 
+class TwoCell extends Component {
+  
+  float capLen = super.scale * 2;
+  float tails;
+  
+  // from x, y to u, v
+  TwoCell(int x, int y, int u, int v) {
+    this.labelDistanceFactor = 7;
+    this.flipSymbol = false;
+    minLen = this.scale * 8;
+    this.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    tails = (len - 3 * capLen) / 2;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float i = this.scale;
+    float x = 0 + tails;
+    
+    g.line(0, 0, x, 0);
+    thickStyle(g);
+    g.line(x, 0 - i * 2, x, 0 + i * 2);
+    float capMid = x + capLen;
+    g.line(capMid, 0 - i * 5, capMid, 0 + i * 5);
+    float capNext = capMid + capLen;
+    g.line(capNext, 0 - i * 2, capNext, 0 + i * 2);
+    float capEnd = capNext + capLen;
+    g.line(capEnd, 0 - i * 5, capEnd, 0 + i * 5);
+    resetThick(g);
+    g.line(capEnd, 0, capEnd + tails, 0);
+  }
+}
+
 class Terminal extends Component {
   // from x, y to u, v
   Terminal(int x, int y, int u, int v) {
-    super.terminates = true;
-    super.minLen = super.scale * 4;
+    this.terminates = true;
+    this.flipSymbol = false;
+    this.minLen = super.scale * 4;
     super.resize(x, y, u, v);
   }
   
   @Override void drawShape(PGraphics g) {
-    float i = super.scale;
+    float i = this.scale;
     
-    g.line(0, 0, super.len - 4 * i, 0);
+    g.line(0, 0, this.len - 4 * i, 0);
     g.noFill();
-    g.ellipse(super.len - 3 * i, 0, 2 * i, 2 * i);
+    g.ellipse(this.len - 3 * i, 0, 2 * i, 2 * i);
     resetStyle(g);
   }
   
@@ -222,20 +271,21 @@ class Terminal extends Component {
     // adjust to place left or on top of component
     //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
-    g.text(labelText, len + super.scale * 2, 6);
+    g.text(labelText, len + this.scale * 2, 6);
   }
 }
 
 class Ground extends Component {
   // from x, y to u, v
   Ground(int x, int y, int u, int v) {
-    super.terminates = true;
-    super.minLen = super.scale * 4;
-    super.resize(x, y, u, v);
+    this.terminates = true;
+    this.flipSymbol = false;
+    this.minLen = this.scale * 4;
+    this.resize(x, y, u, v);
   }
   
   @Override void drawShape(PGraphics g) {
-    float i = super.scale;
+    float i = this.scale;
     
     g.line(0, 0, len - 4 * i, 0);
     
@@ -251,7 +301,7 @@ class Ground extends Component {
     // adjust to place left or on top of component
     //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
-    g.text(labelText, len + super.scale * 2, 6);
+    g.text(labelText, len + this.scale * 2, 6);
   }
 }
 
@@ -262,8 +312,9 @@ class CurrentSource extends Component {
   
   // from x, y to u, v
   CurrentSource(int x, int y, int u, int v) {
-    circLen = 8 * super.scale;
-    minLen = circLen + 2 * super.scale;
+    circLen = 8 * this.scale;
+    this.flipSymbol = false;
+    this.minLen = circLen + 2 * this.scale;
     this.resize(x, y, u, v);
   }
   
@@ -300,7 +351,8 @@ class VoltageSource extends Component {
   // from x, y to u, v
   VoltageSource(int x, int y, int u, int v) {
     circLen = 8 * super.scale;
-    minLen = circLen + 2 * super.scale;
+    this.flipSymbol = false;
+    this.minLen = circLen + 2 * super.scale;
     this.resize(x, y, u, v);
   }
   
@@ -323,12 +375,12 @@ class VoltageSource extends Component {
     
     // minus
     thickStyle(g);
-    g.line(start, y, start + 3.5 * circLen / 10, y);
+    g.line(start, y, start + 3 * circLen / 10, y);
     
     // plus
     g.line(end, y, end - 4 * circLen / 10, y);
     g.line(end - 4 / 2 * circLen / 10, 4 / 2 * circLen / 10,
-    end - 4 / 2 * circLen / 10, -4 / 2 * circLen / 10 + 1); // correct pixel error temporerarly
+    end - 4 / 2 * circLen / 10, -4 / 2 * circLen / 10 - 0.5); // correct pixel error temporerarly
     resetThick(g);
     
     g.line(x + circLen, y, x + circLen + tails, y); // trail line
@@ -342,9 +394,10 @@ class DepCurrentSource extends Component {
   
   // from x, y to u, v
   DepCurrentSource(int x, int y, int u, int v) {
-    diamLen = 8 * super.scale;
-    extraLen = 2 * super.scale;
-    minLen = diamLen + extraLen + 2 * super.scale;
+    this.flipSymbol = false;
+    diamLen = 8 * this.scale;
+    extraLen = 2 * this.scale;
+    minLen = diamLen + extraLen + 2 * this.scale;
     this.resize(x, y, u, v);
   }
   
@@ -387,9 +440,10 @@ class DepVoltageSource extends Component {
   
   // from x, y to u, v
   DepVoltageSource(int x, int y, int u, int v) {
-    diamLen = 8 * super.scale;
-    extraLen = 2 * super.scale;
-    minLen = diamLen + extraLen + 2 * super.scale;
+    this.flipSymbol = false;
+    diamLen = 8 * this.scale;
+    extraLen = 2 * this.scale;
+    minLen = diamLen + extraLen + 2 * this.scale;
     this.resize(x, y, u, v);
   }
   
@@ -498,31 +552,12 @@ class BJTransistor extends Component {
     
     float arrowLen = circSize / 5;
     float xarr = sqrt(sq(xterm - leadingTail - circSize / 3) + sq(yterm - i * 1.5)) - arrowLen;
-    
-    // arrow head
-    // Todo: Redo this less horribly                    ????? 0.3 correction factor
-    //g.translate(leadingTail + circSize / 3, (yterm - i * 1.5) * (isPNP ? 1 : -1)); // this is not correct
-    //g.pushMatrix();
-    //g.rotate(atan((isPNP ? 1 : -1) * (yterm - i * 1.5) / (xarr + arrowLen)));
-    //g.pushMatrix();
-    //g.beginShape();
-    //if (isPNP) {
-    //  g.vertex(xarr, arrowLen / 3);
-    //  g.vertex(xarr + arrowLen, 0);
-    //  g.vertex(xarr, -arrowLen / 3);
-    //} else {
-    //  g.vertex(arrowLen, arrowLen / 3);
-    //  g.vertex(0, 0);
-    //  g.vertex(arrowLen, -arrowLen / 3);
-    //}
-    //g.endShape();
-    //g.popMatrix();
-    //g.popMatrix();
   }
 }
 
 class Wire extends Component {
   Wire(int x, int y, int u, int v) {
+    this.flipSymbol = false;
     this.minLen = 1;
     this.resize(x, y, u, v);
     this.labeled = false;

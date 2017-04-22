@@ -10,39 +10,10 @@ PGraphics g;
 
 void setup() {
   size(500, 500);
-  smooth();
-  // leave this, then use noSmooth + blur and custom
-  // downscaling for image export.
   
-  fnt = createFont("Monospaced-48", 16, true);
-  g = createGraphics(500, 500);
-  
-  g.beginDraw();
-  resetStyle(g);
-  g.textFont(fnt, 16);
-  g.endDraw();
-  
+  initScene(); // init graphics and font
   drawScene();
 }
-
-void resetStyle(PGraphics g) {
-  resetThick(g);
-  
-  g.stroke(drawingColour);
-  g.fill(drawingColour);
-  
-  g.strokeCap(SQUARE);
-}
-
-void thickStyle(PGraphics g) {
-  g.strokeWeight(4 * SCALE);
-  // note that 1, 3, 6 etc align with pixel grid, but look shit for circles.
-}
-
-void resetThick(PGraphics g) {
-  g.strokeWeight(2 * SCALE);
-}
-
 
 Cursor cursor = new Cursor();
 Mode mode = new SelectionMode();
