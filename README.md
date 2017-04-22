@@ -29,10 +29,10 @@ Press a key multiple times for simular components, e.g. press <kbd>b</kbd> twice
 You may use the <kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> keys instead of the arrows, however you will not be able to exit label mode with these keys.
 
 ## To do
+- Toggle the terminal a multi terminal device starts on
+- Auto move selection to terminal point
 - Add floating notes.
 - Crop exported image so that circuit sits in screen center.
-- Change how i/o is implemented to stop unexpected behavior with code char duality.
-- Center component labels.
 - Make inductor symbol more fancy
 - Use super sampling.
 
