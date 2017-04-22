@@ -51,7 +51,7 @@ class LabelMode extends Mode {
     super.name = "label";
     println(super.name);
     
-    if (!cm.labeled) {
+    if (!cm.isLabeled) {
       this.key(ESC); // pull out
     }
     
@@ -92,7 +92,7 @@ class LabelMode extends Mode {
       case LEFT: case RIGHT: case UP: case DOWN:
         cursor.freeze = false;
         if (c.labelText == "_") c.labelText = "";
-        if (c.terminates) mode = new SelectionMode();
+        if (c.isTerminating) mode = new SelectionMode();
         else mode = new DrawMode();
         break;
     }
@@ -144,13 +144,13 @@ class DrawMode extends Mode {
          break;
       case ENTER:
       case RETURN:
-        cur.terminates = true;
+        cur.isTerminating = true;
       case ' ':
          if (leng(x, y, cursor.x, cursor.y) > cur.minLen / 2) {
            activeComps[numComps++] = cur;
          
-           if (!cur.labeled) {
-             if (cur.terminates) mode = new SelectionMode();
+           if (!cur.isLabeled) {
+             if (cur.isTerminating) mode = new SelectionMode();
              else mode = new DrawMode();
            } else if (keyDown[16]) { // shift override
              mode = new DrawMode();

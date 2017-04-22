@@ -6,11 +6,12 @@ class Component {
   int x, y;
   float xend, yend;
   
-  boolean terminates = false;
-  boolean labeled = true;
-  boolean flipSymbol = true;
+  float labelOffset = 6;
+  
+  boolean isTerminating = false;
+  boolean isLabeled = false;
+  boolean shouldMirror = false;
   String labelText = "";
-  int labelDistanceFactor = 6;
   
   void draw(PGraphics g) {
     g.pushMatrix();
@@ -23,13 +24,13 @@ class Component {
     if (x > xend || // correct orientation
       (x == xend && y > yend)) { // consisent vertial case
       
-      if (flipSymbol) g.scale(1, -1);
+      if (shouldMirror) g.scale(1, -1);
     }
     
     drawShape(g);
     
     g.popMatrix();
-    if (labeled && labelText.length() > 0) {
+    if (isLabeled && labelText.length() > 0) {
       drawText(g, ang);
     }
     g.popMatrix();
@@ -44,19 +45,24 @@ class Component {
     // midpoint
     float xnew = len * cos(ang) / 2;
     float ynew = len * sin(ang) / 2;
+    float offset = labelOffset;
     
     // adjust to place left or on top of component
     ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
     if (x != xend && y == yend) textTopStyle(g); // x-axis
     else if (y != yend && x == xend) textSideStyle(g); // y-axis
-    else if (xend - x == yend - y) // +ve diagonal
+    else {
+      offset += 2; // extra room when diagonal
+      
+      if (xend - x == yend - y) // +ve/-ve diagonals
         textSideStyle(g);
-    else textLeftStyle(g);
+      else textLeftStyle(g); // oppisite diagonals
+    }
     
     g.text(labelText,
-      xnew - cos(ang) * scale * labelDistanceFactor,
-      ynew - sin(ang) * scale * labelDistanceFactor);
+      xnew - cos(ang) * scale * offset,
+      ynew - sin(ang) * scale * offset);
   }
   
   void resize(int x1, int y1, int u, int v) {
@@ -73,8 +79,8 @@ class Resistor extends Component {
   
   // from x, y to u, v
   Resistor(int x, int y, int u, int v) {
-    this.labelDistanceFactor = 3;
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    this.labelOffset = 3;
     zigLen = 4 * this.scale * zigs;
     minLen = zigLen + 4 * this.scale;
     this.resize(x, y, u, v);
@@ -92,12 +98,6 @@ class Resistor extends Component {
     g.line(0, 0, x, y);
     float start = 0, j = 0;
     thickStyle(g);
-    //for (j = 0; j < 3; j++) {
-    //  start = x + j * 4 * i;
-    //  g.line(start, y, start + 1 * i, y + 2 * i);
-    //  g.line(start + 1 * i, y + 2 * i, start + 3 * i, y - 2 * i);
-    //  g.line(start + 3 * i, y - 2 * i, start + 4 * i, y);
-    //}
     g.noFill();
     g.strokeJoin(BEVEL);
     g.beginShape();
@@ -121,7 +121,9 @@ class Inductor extends Component {
   
   // from x, y to u, v
   Inductor(int x, int y, int u, int v) {
-    this.labelDistanceFactor = 7;
+    this.isLabeled = true;
+    this.shouldMirror = true;
+    this.labelOffset = 7;
     zigLen = 4 * this.scale * zigs;
     minLen = zigLen + 4 * this.scale;
     this.resize(x, y, u, v);
@@ -156,8 +158,8 @@ class Capacitor extends Component {
   
   // from x, y to u, v
   Capacitor(int x, int y, int u, int v) {
-    this.flipSymbol = false;
-    this.labelDistanceFactor = 7;
+    this.isLabeled = true;
+    this.labelOffset = 7;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -188,8 +190,8 @@ class Cell extends Component {
   
   // from x, y to u, v
   Cell(int x, int y, int u, int v) {
-    this.labelDistanceFactor = 7;
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    this.labelOffset = 7;
     minLen = super.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -220,8 +222,8 @@ class TwoCell extends Component {
   
   // from x, y to u, v
   TwoCell(int x, int y, int u, int v) {
-    this.labelDistanceFactor = 7;
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    this.labelOffset = 7;
     minLen = this.scale * 8;
     this.resize(x, y, u, v);
   }
@@ -252,8 +254,8 @@ class TwoCell extends Component {
 class Terminal extends Component {
   // from x, y to u, v
   Terminal(int x, int y, int u, int v) {
-    this.terminates = true;
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    this.isTerminating = true;
     this.minLen = super.scale * 4;
     super.resize(x, y, u, v);
   }
@@ -278,8 +280,7 @@ class Terminal extends Component {
 class Ground extends Component {
   // from x, y to u, v
   Ground(int x, int y, int u, int v) {
-    this.terminates = true;
-    this.flipSymbol = false;
+    this.isTerminating = true;
     this.minLen = this.scale * 4;
     this.resize(x, y, u, v);
   }
@@ -312,8 +313,9 @@ class CurrentSource extends Component {
   
   // from x, y to u, v
   CurrentSource(int x, int y, int u, int v) {
+    this.isLabeled = true;
+    
     circLen = 8 * this.scale;
-    this.flipSymbol = false;
     this.minLen = circLen + 2 * this.scale;
     this.resize(x, y, u, v);
   }
@@ -350,8 +352,9 @@ class VoltageSource extends Component {
   
   // from x, y to u, v
   VoltageSource(int x, int y, int u, int v) {
+    this.isLabeled = true;
+    
     circLen = 8 * super.scale;
-    this.flipSymbol = false;
     this.minLen = circLen + 2 * super.scale;
     this.resize(x, y, u, v);
   }
@@ -394,7 +397,8 @@ class DepCurrentSource extends Component {
   
   // from x, y to u, v
   DepCurrentSource(int x, int y, int u, int v) {
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    
     diamLen = 8 * this.scale;
     extraLen = 2 * this.scale;
     minLen = diamLen + extraLen + 2 * this.scale;
@@ -440,7 +444,8 @@ class DepVoltageSource extends Component {
   
   // from x, y to u, v
   DepVoltageSource(int x, int y, int u, int v) {
-    this.flipSymbol = false;
+    this.isLabeled = true;
+    
     diamLen = 8 * this.scale;
     extraLen = 2 * this.scale;
     minLen = diamLen + extraLen + 2 * this.scale;
@@ -478,14 +483,6 @@ class DepVoltageSource extends Component {
     end - 4 / 2 * diamLen / 10, -4 / 2 * diamLen / 10 + 1); // correct pixel error temporerarly
     resetThick(g);
     
-    //// minus
-    //g.line(start, y, start + diamLen / 5, y);
-    
-    //// plus
-    //g.line(end - diamLen / 5, y, end, y);
-    //g.line(end - diamLen / 10, diamLen / 10,
-    //end - diamLen / 10, - diamLen / 10); // correct pixel error temporerarly
-    
     x += extraLen / 2; 
     x += diamLen; // to end of diagonal
     
@@ -503,8 +500,8 @@ class BJTransistor extends Component {
   
   // from x, y to u, v
   BJTransistor(int x, int y, int u, int v, boolean isPNP) {
-    this.labeled = false;
-    this.terminates = true;
+    this.isTerminating = true;
+    this.shouldMirror = true;
     this.resize(x, y, u, v);
     this.isPNP = isPNP;
     this.minLen = circSize;
@@ -545,21 +542,17 @@ class BJTransistor extends Component {
       arrow(g, xterm, -yterm, x, -i * 1.5, 2 * i);
     }
     
-    
     // terminals
     g.line(xterm, yterm, xterm, circSize);
     g.line(xterm, -yterm, xterm, -circSize);
-    
-    float arrowLen = circSize / 5;
-    float xarr = sqrt(sq(xterm - leadingTail - circSize / 3) + sq(yterm - i * 1.5)) - arrowLen;
   }
 }
 
+
+
 class Wire extends Component {
   Wire(int x, int y, int u, int v) {
-    this.flipSymbol = false;
     this.minLen = 1;
     this.resize(x, y, u, v);
-    this.labeled = false;
   }
 }
