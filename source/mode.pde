@@ -198,6 +198,13 @@ class DrawMode extends Mode {
           ((BJTransistor)cur).isPNP = !((BJTransistor)cur).isPNP;
         else cur = new BJTransistor(x, y, cursor.x, cursor.y, isPNP);
         break;
+      case 'f':
+        // toggle 
+        boolean isNChannel = true;
+        if (cur instanceof FETransistor)
+          ((FETransistor)cur).isNChannel = !((FETransistor)cur).isNChannel;
+        else cur = new FETransistor(x, y, cursor.x, cursor.y, isNChannel);
+        break;
     }
   }
   

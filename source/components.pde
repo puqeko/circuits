@@ -548,7 +548,71 @@ class BJTransistor extends Component {
   }
 }
 
-
+class FETransistor extends Component {
+  
+  float capLen = super.scale * 2;
+  float circSize = super.scale * 10;
+  int leadingTail;
+  
+  boolean isNChannel;
+  
+  // from x, y to u, v
+  FETransistor(int x, int y, int u, int v, boolean isNChannel) {
+    this.isTerminating = true;
+    this.shouldMirror = true;
+    this.resize(x, y, u, v);
+    this.isNChannel = isNChannel;
+    this.minLen = circSize;
+  }
+  
+  @Override void resize(int a, int b, int u, int v) {
+    super.resize(a, b, u, v);
+    float tail = len - circSize;
+    leadingTail = int(tail - tail % 10) + 10;
+  }
+  
+  @Override void drawShape(PGraphics g) {
+    float i = super.scale;
+    float x = leadingTail, y = 0;
+    float tot = circSize;
+    
+    g.noFill();
+    g.ellipse(x + tot / 2, y, tot, tot); // circle
+    resetStyle(g);
+    
+    x += 2 * circSize / 5;
+    if (isNChannel) {
+      arrow(g, 0, 0, x, 0, i * 2);
+    } else {
+      g.line(0, 0, x, 0);
+      arrow(g, x, 0, x - i * 4, 0, i * 2);
+    }
+    
+    // channel
+    thickStyle(g);
+    g.line(x, 0 - i * 3.5, x, 0 + i * 3.5);
+    resetThick(g);
+    
+    float xterm = leadingTail + circSize - 10;
+    float yoffset = i * 2;
+    
+    // terminals
+    g.noFill();
+    g.beginShape();
+    g.vertex(x, -yoffset);
+    g.vertex(xterm, -yoffset);
+    g.vertex(xterm, -circSize);
+    g.endShape();
+    
+    g.beginShape();
+    g.vertex(x, yoffset);
+    g.vertex(xterm, yoffset);
+    g.vertex(xterm, circSize);
+    g.endShape();
+    
+    resetStyle(g);
+  }
+}
 
 class Wire extends Component {
   Wire(int x, int y, int u, int v) {
