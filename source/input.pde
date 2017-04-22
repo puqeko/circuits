@@ -7,11 +7,30 @@ int waitTime = 200;
 void keyPressed() {
   if ((key == CODED || key <= 256)) {
     int code = key == CODED ? keyCode : key;
+    println(code);
+    
     if (!keyDown[code]) {
-      keyTime[code] = millis();
-      keyDown[code] = true;
-      keyDown(code);
+      
+      // 65 => 90; 97 => 122
+      if (key == CODED && code == SHIFT) { // change lower case downs to upper case
+        for (int i = 97; i <= 122; i++) {
+          if (keyDown[i]) {
+            keyDown[i] = false;
+            keyDown[i - 32] = true;
+          }
+        }
+      } else if (key != CODED && keyDown[SHIFT] && code >= 97 && code <= 122) { // ensure upper case
+        keyTime[code - 32] = millis();
+        keyDown[code - 32] = true;
+        keyDown(code - 32);
+      } else {
+        keyTime[code] = millis();
+        keyDown[code] = true;
+        keyDown(code);
+      }
     }
+    
+    
   }
   
   if (key == ESC)
@@ -21,7 +40,19 @@ void keyPressed() {
 void keyReleased() {
   if (key == CODED || key <= 256) {
     int code = key == CODED ? keyCode : key;
-    keyDown[code] = keyDownLong[code] = false;
+    
+    if (key == CODED && code == SHIFT) {
+      for (int i = 65; i <= 90; i++) {
+        if (keyDown[i]) {
+          keyDown[i] = false;
+          keyDown[i + 32] = true;
+        }
+      }
+    } else if (key != CODED && code >= 97 && code <= 122) { // ensure undo upper case when no shift
+      keyDown[code] = keyDown[code - 32] = keyDownLong[code] = keyDownLong[code - 32] = false;
+    } else {
+      keyDown[code] = keyDownLong[code] = false;
+    }
   }
 }
 
@@ -34,7 +65,7 @@ void updateInput() {
     
     // only apply fastKey to these ones
     if (code == LEFT || code == RIGHT || code == UP || code == DOWN ||
-    "hjklwasdWASD".indexOf(char(code)) != -1) {
+    "wasdWASD".indexOf(char(code)) != -1) {
       
       // not registered as long press yet, but pressed down
       if (!keyDownLong[code] && keyDown[code]) {
