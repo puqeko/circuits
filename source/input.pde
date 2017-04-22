@@ -19,6 +19,10 @@ void keyPressed() {
             keyDown[i - 32] = true;
           }
         }
+        keyTime[code] = millis();
+        keyDown[code] = true;
+        keyDown(code);
+        
       } else if (key != CODED && keyDown[SHIFT] && code >= 97 && code <= 122) { // ensure upper case
         keyTime[code - 32] = millis();
         keyDown[code - 32] = true;
@@ -47,6 +51,8 @@ void keyReleased() {
           keyDown[i] = false;
           keyDown[i + 32] = true;
         }
+        
+        keyDown[code] = keyDownLong[code] = false;
       }
     } else if (key != CODED && code >= 97 && code <= 122) { // ensure undo upper case when no shift
       keyDown[code] = keyDown[code - 32] = keyDownLong[code] = keyDownLong[code - 32] = false;
