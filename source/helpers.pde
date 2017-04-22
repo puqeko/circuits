@@ -17,15 +17,18 @@ float leng(float x, float y, float u, float v) {
 void arrow(PGraphics g, float x, float y, float u, float v, float arrSize) {
   float len = leng(x, y, u, v);
   
+  // position
   g.pushMatrix();
   g.translate(x, y);
   g.rotate(atan2(v-y, u-x));
+  
+  // object
   g.line(0, 0, len, 0);
   
   g.beginShape();
-  g.vertex(len - arrSize - 2, arrSize/2);
-  g.vertex(len - 2, 0);
-  g.vertex(len - arrSize - 2, -arrSize/2);
+  g.vertex(len - arrSize, arrSize/2);
+  g.vertex(len, 0);
+  g.vertex(len - arrSize, -arrSize/2);
   g.endShape();
   
   g.popMatrix();
