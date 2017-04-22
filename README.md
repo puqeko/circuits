@@ -12,7 +12,7 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
   - Inductor <kbd>l</kbd>
   - Battery Cell<kbd>b</kbd>
   - Open Circuit <kbd>o</kbd>
-  - Voltage source<kbd>v</kbd>
+  - Voltage source <kbd>v</kbd>
   - Dependant voltage source <kbd>Shift</kbd><kbd>V</kbd>
   - Current source <kbd>i</kbd>
   - Dependant current source <kbd>Shift</kbd><kbd>I</kbd>
@@ -35,7 +35,7 @@ You may use the <kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> keys instead of
 ## To do
 - Toggle the terminal a multi terminal device starts on
 - Auto move selection to terminal point
-- Add floating notes.
-- Crop exported image so that circuit sits in screen center.
+- Add floating notes
+- Crop exported image so that circuit sits in screen center
 - Make inductor symbol more fancy
-- Use super sampling.
+- Try implementing super sampling for better image quality
