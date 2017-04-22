@@ -28,7 +28,7 @@ Use <kbd>u</kbd> for undo, and <kbd>Shift</kbd><kbd>R</kbd> to redo.
 
 Press <kbd>p</kbd> for a black and white screen shot, and <kbd>Shift</kbd><kbd>P</kbd> for a screen shot with transparency.
 
-Press a key multiple times for simular components, e.g. press <kbd>b</kbd> twice for a two-cell battery, or <kbd>t</kbd> twice to change between a PNP and NPN transistor.
+Press a key multiple times for similar components, e.g. press <kbd>b</kbd> twice for a two-cell battery, or <kbd>t</kbd> twice to change between a PNP and NPN transistor.
 
 You may use the <kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> keys instead of the arrows, however you will not be able to exit label mode with these keys.
 
