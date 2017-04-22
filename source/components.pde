@@ -43,26 +43,32 @@ class Component {
   void drawText(PGraphics g, float ang) {
     
     // midpoint
-    float xnew = len * cos(ang) / 2;
-    float ynew = len * sin(ang) / 2;
-    float offset = labelOffset;
+    PVector v = this.textPos(ang);
+    float offset = v.z; // how far spaced up
     
     // adjust to place left or on top of component
     ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
     
+    textStyle(g, ang);
+    g.text(labelText,
+      v.x - cos(ang) * scale * offset,
+      v.y - sin(ang) * scale * offset);
+  }
+  
+  void textStyle(PGraphics g, float ang) {
     if (x != xend && y == yend) textTopStyle(g); // x-axis
     else if (y != yend && x == xend) textSideStyle(g); // y-axis
     else {
-      offset += 2; // extra room when diagonal
-      
       if (xend - x == yend - y) // +ve/-ve diagonals
         textSideStyle(g);
       else textLeftStyle(g); // oppisite diagonals
     }
-    
-    g.text(labelText,
-      xnew - cos(ang) * scale * offset,
-      ynew - sin(ang) * scale * offset);
+  }
+  
+  PVector textPos(float ang) {
+    float offset = labelOffset;
+    if (abs(xend - x) == abs(yend - y)) offset += 2;
+    return new PVector(len * cos(ang) / 2, len * sin(ang) / 2, offset);
   }
   
   void resize(int x1, int y1, int u, int v) {
@@ -276,11 +282,14 @@ class Terminal extends Component {
     resetStyle(g);
   }
   
-  @Override void drawText(PGraphics g, float ang) {
-    // adjust to place left or on top of component
-    //ang += PI/2 * (ang <= - PI/2 || ang > PI/2 ? -1 : 1);
-    
-    g.text(labelText, len + this.scale * 2, 6);
+  @Override PVector textPos(float ang) {
+     return new PVector((len + labelOffset) * cos(ang), len * sin(ang), 0);
+  }
+  
+  @Override void textStyle(PGraphics g, float ang) {
+    if (xend > x) textSideStyle(g);
+    else if (xend == x) g.textAlign(CENTER, yend > y ? TOP : BOTTOM); // y-axis
+    else textLeftStyle(g);
   }
 }
 
