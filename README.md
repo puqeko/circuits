@@ -4,7 +4,7 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
 <img width="250" alt="2017-04-22 at 11 02 53 pm" src="https://cloud.githubusercontent.com/assets/12654833/25303867/fc4947f8-27af-11e7-84cc-153967ceed57.png">
 
 ## Controls
-- You start in selection mode. Use the arrow keys to move the sqaure cursor.
+- You start in selection mode. Use the arrow keys to move the square cursor.
 - <kbd>Space</kbd> to enter drawing mode.
 - Select a component type with the following keys
   - Resistor <kbd>r</kbd>
