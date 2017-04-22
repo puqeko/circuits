@@ -1,6 +1,8 @@
 # Circuits
 Idea for a way to quickly input circuit diagrams with only a keyboard. Made with Processing.
 
+<img width="250" alt="2017-04-22 at 11 02 53 pm" src="https://cloud.githubusercontent.com/assets/12654833/25303867/fc4947f8-27af-11e7-84cc-153967ceed57.png">
+
 ## Controls
 - You start in selection mode. Use the arrow keys to move the sqaure cursor.
 - <kbd>Space</kbd> to enter drawing mode.
@@ -24,6 +26,8 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
 
 Use <kbd>u</kbd> for undo, and <kbd>Shift</kbd><kbd>R</kbd> to redo.
 
+Press <kbd>p</kbd> for a black and white screen shot, and <kbd>Shift</kbd><kbd>P</kbd> for a screen shot with transparency.
+
 Press a key multiple times for simular components, e.g. press <kbd>b</kbd> twice for a two-cell battery, or <kbd>t</kbd> twice to change between a PNP and NPN transistor.
 
 You may use the <kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> keys instead of the arrows, however you will not be able to exit label mode with these keys.
@@ -35,5 +39,3 @@ You may use the <kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> keys instead of
 - Crop exported image so that circuit sits in screen center.
 - Make inductor symbol more fancy
 - Use super sampling.
-
-<img width="502" alt="2017-04-16 at 8 24 03 pm" src="https://cloud.githubusercontent.com/assets/12654833/25069929/19e05b20-22e3-11e7-889d-64357f088005.png">
