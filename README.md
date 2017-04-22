@@ -10,7 +10,7 @@ Idea for a way to quickly input circuit diagrams with only a keyboard. Made with
   - Resistor <kbd>r</kbd>
   - Capacitor <kbd>c</kbd>
   - Inductor <kbd>l</kbd>
-  - Battery Cell<kbd>b</kbd>
+  - Battery Cell <kbd>b</kbd>
   - Open Circuit <kbd>o</kbd>
   - Voltage source <kbd>v</kbd>
   - Dependant voltage source <kbd>Shift</kbd><kbd>V</kbd>
