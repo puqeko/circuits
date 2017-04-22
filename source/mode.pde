@@ -77,7 +77,6 @@ class LabelMode extends Mode {
     // 32 is space
     if ((code >= 48 && code <= 122) || code == 32 || code == ' ') { //common chars
           text += char(code);
-          println("add");
     } else if (code == 8) { // delete
       if (text.length() > 0) text = text.substring(0, text.length() - 1);
     }
@@ -111,7 +110,10 @@ class SelectionMode extends Mode {
          mode = new DrawMode();
          break;
       case 'p':
-        printScene(); // print mode
+        printScene(false); // print mode
+        break;
+      case 'P':
+        printScene(true); // print transparent
         break;
       case 'u': // undo
         undo();

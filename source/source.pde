@@ -4,6 +4,8 @@ int numComps = 0, numHistoryComps = 0;
 
 boolean isPrintStyle = false;
 color drawingColour = color(0);
+color printBackground = color(255);
+float alpha = 0;
 
 PFont fnt;
 PGraphics g;
@@ -43,7 +45,9 @@ void draw() {
 void drawScene() {
   background(253, 246, 227);
   g.beginDraw();
-  g.background(drawingColour, 0);
+  g.background(
+    isPrintStyle ? printBackground : drawingColour,
+    isPrintStyle ? 255 : alpha);
   g.endDraw();
   
   g.beginDraw();
@@ -58,14 +62,12 @@ void drawScene() {
 }
 
 // save reversed out image (black on white)
-void printScene() {
-  isPrintStyle = true;
-  drawingColour = color(0);
+void printScene(boolean transparent) {
+  isPrintStyle = !transparent; // set white background if not transparent
   resetStyle(g);
   drawScene();
   g.save("out.png");
   isPrintStyle = false;
-  drawingColour = color(0); //toggle
   resetStyle(g);
   drawScene();
   println("Saved");
