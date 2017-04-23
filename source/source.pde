@@ -51,7 +51,7 @@ void drawScene() {
   g.endDraw();
   
   g.beginDraw();
-  if (!isPrintStyle) cursor.draw(g);
+  cursor.draw(g);
   mode.draw(g);
   
   for (int i = 0; i < numComps; i++) {
@@ -64,10 +64,12 @@ void drawScene() {
 // save reversed out image (black on white)
 void printScene(boolean transparent) {
   isPrintStyle = !transparent; // set white background if not transparent
+  cursor.isSuppressed = true;
   resetStyle(g);
   drawScene();
   g.save("out.png");
   isPrintStyle = false;
+  cursor.isSuppressed = false;
   resetStyle(g);
   drawScene();
   println("Saved");

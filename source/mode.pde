@@ -24,19 +24,22 @@ class Mode {
 // allways active
 class Cursor extends Mode {
   int x = 50, y = 50;
-  boolean freeze = false;
+  boolean isFrozen = false;
+  boolean isSuppressed = false;
   
   Cursor() {
     super.name = "cursor";
   }
   
   @Override void draw(PGraphics g) {
-    g.rectMode(CENTER);
-    g.rect(x - x % 10, y - y % 10, 5, 5);
+    if (!this.isSuppressed) {
+      g.rectMode(CENTER);
+      g.rect(x - x % 10, y - y % 10, 5, 5);
+    }
   }
   
   @Override void select(int code) {
-    if (!freeze) super.select(code);
+    if (!this.isFrozen) super.select(code);
   }
 }
 
@@ -47,6 +50,9 @@ class LabelMode extends Mode {
   boolean blink = true; // start with _ char
   String text = "";
   
+  boolean isFromMode = false;
+  Mode prevMode;
+  
   LabelMode(Component cm) {
     super.name = "label";
     println(super.name);
@@ -55,7 +61,7 @@ class LabelMode extends Mode {
       this.key(ESC); // pull out
     }
     
-    cursor.freeze = true;
+    cursor.isFrozen = true;
     c = cm;
     time = millis();
   }
@@ -89,10 +95,13 @@ class LabelMode extends Mode {
       case RETURN:
       case ENTER:
       case LEFT: case RIGHT: case UP: case DOWN:
-        cursor.freeze = false;
-        if (c.labelText == "_") c.labelText = "";
-        if (c.isTerminating) mode = new SelectionMode();
-        else mode = new DrawMode();
+        if (isFromMode) mode = prevMode;
+        else {
+          cursor.isFrozen = false;
+          if (c.labelText == "_") c.labelText = "";
+          if (c.isTerminating) mode = new SelectionMode();
+          else mode = new DrawMode();
+        }
         break;
     }
   }
@@ -163,6 +172,12 @@ class DrawMode extends Mode {
            mode = new SelectionMode();
          }
          break;
+      case 'e': // edit mode
+        if (leng(x, y, cursor.x, cursor.y) > cur.minLen / 2) {
+           activeComps[numComps++] = cur;
+        }
+        mode = new EditMode();
+        break;
       case 'u': // undo
         undo();
         break;
@@ -303,4 +318,60 @@ class DrawMode extends Mode {
     }
   }
   
+}
+
+class EditMode extends Mode {
+  Component cur;
+  int curIdx;
+  
+  EditMode() {
+    super.name = "edit";
+    println(super.name);
+    curIdx = numComps - 1;
+    cur = activeComps[curIdx]; // prev component
+    
+    cursor.isFrozen = true;
+    cursor.isSuppressed = true;
+  }
+  
+  @Override void draw(PGraphics g) {
+    g.strokeCap(ROUND);
+    g.strokeWeight(10);
+    g.stroke(color(200, 190, 150, 80));
+    g.line(cur.x, cur.y, cur.xend, cur.yend);
+    resetStyle(g);
+  }
+  
+  @Override void select(int code) {
+    switch(code) {
+      case LEFT:
+      case RIGHT:
+        curIdx += LEFT == code ? -1 : 1;
+        // todo: take into account direction of component?
+        
+        if (curIdx < 0) curIdx += numComps;
+        curIdx %= numComps;
+        
+        cur = activeComps[curIdx];
+        break;
+      case ' ':
+        // edit label
+        LabelMode labelmode = new LabelMode(cur);
+        labelmode.isFromMode = true;
+        labelmode.prevMode = this;
+        mode = labelmode; // set global
+        break;
+      case 'e':
+      case ESC:
+      case RETURN:
+      case ENTER:
+        cursor.isFrozen = false;
+        cursor.isSuppressed = false;
+        mode = new SelectionMode();
+        break;
+      default:
+        // apply normal component choosing keys to switch to a new
+        // but preserve label text
+    }
+  }
 }
