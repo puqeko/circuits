@@ -192,7 +192,10 @@ class DrawMode extends Mode {
         if (cur instanceof Cell) cur = new TwoCell(x, y, cursor.x, cursor.y);
         else cur = new Cell(x, y, cursor.x, cursor.y);
         break;
-      case 'o': cur = new Terminal(x, y, cursor.x, cursor.y); break;
+      case 'o':
+        if (cur instanceof Terminal) ((Terminal) cur).isFinal = !((Terminal) cur).isFinal;
+        else cur = new Terminal(x, y, cursor.x, cursor.y);
+        break;
       case 'i':
         if (!(cur instanceof CurrentSource)) {
           cur = new CurrentSource(x, y, cursor.x, cursor.y);

@@ -263,12 +263,19 @@ class TwoCell extends Component {
 }
 
 class Terminal extends Component {
+  boolean isFinal = true;
+  
   // from x, y to u, v
   Terminal(int x, int y, int u, int v) {
     this.isLabeled = true;
     this.isTerminating = true;
     this.minLen = super.scale * 4;
     super.resize(x, y, u, v);
+  }
+  
+  @Override void resize(int x, int y, int u, int v) {
+    if (isFinal) super.resize(x, y, u, v);
+    else super.resize(u, v, x, y);
   }
   
   @Override void drawShape(PGraphics g) {
